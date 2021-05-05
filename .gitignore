@@ -5,6 +5,7 @@ blockchain/node_modules
 # production
 blockchain/build
 blockchain/.secret
+client/build
 
 
 blockchain/package-lock.json

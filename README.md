@@ -5,10 +5,12 @@
 [![Issues](https://img.shields.io/github/issues/Pedrojok01/CoinFlip_2.0)](https://github.com/Pedrojok01/CoinFlip_2.0/issues)
 [![MIT License](https://img.shields.io/github/license/Pedrojok01/CoinFlip_2.0)](https://github.com/Pedrojok01/CoinFlip_2.0/blob/main/License)
 [![LinkedIn](https://img.shields.io/badge/-LinkedIn-black)](https://www.linkedin.com/in/pierre-estrabaud-96b303206/)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/76d848df-b740-4850-a007-ad3e8d70e8ef/deploy-status)](https://app.netlify.com/sites/flippincoin/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/7f7b73fb-c34d-4063-826b-dceae8a580a2/deploy-status)](https://app.netlify.com/sites/coinflip-double-up-your-eth/deploys)
 [![Donate with Bitcoin](https://en.cryptobadges.io/badge/micro/37wP5rdaFgtHrEQ44M5Tntyeb9nChd8jC4)](https://en.cryptobadges.io/donate/37wP5rdaFgtHrEQ44M5Tntyeb9nChd8jC4)
 
 Dapp built on the Ethereum Network as a part of the programming course: Ethereum201 on [academy.ivanontech.com](https://academy.ivanontech.com/a/17936/3zF57WQv).
+
+Try it yourself: [coinflip-double-up-your-eth.netlify.app/](https://coinflip-double-up-your-eth.netlify.app/)
 
 ![Preview](./Preview.png)
 
@@ -58,4 +60,6 @@ On each deploy, make sure to:
 You are now set to start your local server. Make sure you're still in `COINFLIP 2.0/client` and type:
  `npm start`
 
+
+If you like it, a donation is always welcome!
 [![Donate with Bitcoin](https://en.cryptobadges.io/badge/big/37wP5rdaFgtHrEQ44M5Tntyeb9nChd8jC4)](https://en.cryptobadges.io/donate/37wP5rdaFgtHrEQ44M5Tntyeb9nChd8jC4)

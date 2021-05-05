@@ -76,8 +76,8 @@ export const Game = () => {
         syncAll();
         addNotification({
           title: win
-            ? `You won Ξ ${formatEther(value)}`
-            : `You lost Ξ ${formatEther(value)}`,
+            ? `You won ${formatEther(value)} ETH!`
+            : `You lost ${formatEther(value)} ETH. Let's try again!`,
           icon: win ? faTrophy : faSadTear,
           isSuccess: win,
           isError: !win,
