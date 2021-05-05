@@ -1,0 +1,11 @@
+# dependencies
+client/node_modules
+blockchain/node_modules
+
+# production
+blockchain/build
+blockchain/.secret
+
+
+blockchain/package-lock.json
+client/package-lock.json
