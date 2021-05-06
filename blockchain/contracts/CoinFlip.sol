@@ -38,7 +38,7 @@ contract CoinFlip is Ownable, VRFConsumerBase {
 ==================*/
 
     event DepositToContract(address user, uint256 depositAmount, uint256 newBalance);
-    event Withdrawal(address player, uint256 amount, uint256 contractBalance );
+    event Withdrawal(address player, uint256 amount);
     event NewIdRequest(address indexed player, bytes32 requestId);
     event GeneratedRandomNumber(bytes32 requestId, uint256 randomNumber);
     event BetResult(address indexed player, bool victory, uint256 amount);
@@ -106,7 +106,7 @@ contract CoinFlip is Ownable, VRFConsumerBase {
     function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
         randomResult = randomness%2;
         temps[requestId].result = randomResult;
-            
+           
         checkResult(randomResult, requestId);
 
         emit GeneratedRandomNumber(requestId, randomResult);
@@ -131,7 +131,6 @@ contract CoinFlip is Ownable, VRFConsumerBase {
         playersByAddress[player].betOngoing = false;
 
         delete(temps[_requestId]);
-        
         return win;
     }
 
@@ -140,6 +139,7 @@ contract CoinFlip is Ownable, VRFConsumerBase {
         require(msg.value > 0);
 
         contractBalance += msg.value;
+
         emit DepositToContract(msg.sender, msg.value, contractBalance);
     }
 
@@ -163,7 +163,7 @@ contract CoinFlip is Ownable, VRFConsumerBase {
         msg.sender.transfer(amount);
         delete (playersByAddress[msg.sender]);
 
-        emit Withdrawal(msg.sender, amount, contractBalance);
+        emit Withdrawal(msg.sender, amount);
     }
 
 

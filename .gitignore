@@ -5,7 +5,10 @@ blockchain/node_modules
 # production
 blockchain/build
 blockchain/.secret
+
+# netlify
 client/build
+.netlify
 
 
 blockchain/package-lock.json
