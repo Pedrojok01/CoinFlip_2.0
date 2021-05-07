@@ -30,7 +30,7 @@ Make sure you have the following ready:
 
 ### Contracts
 
-In your terminal, got to the COINFLIP 2.0 repo and type:
+In your terminal, go to the COINFLIP 2.0 repo and type:
 `cd blockchain`
 `npm install`
 
@@ -61,5 +61,5 @@ You are now set to start your local server. Make sure you're still in `COINFLIP 
  `npm start`
 
 
-If you like it, a donation is always welcome!
+If you like it, a donation is always welcome!<br/>
 [![Donate with Bitcoin](https://en.cryptobadges.io/badge/big/37wP5rdaFgtHrEQ44M5Tntyeb9nChd8jC4)](https://en.cryptobadges.io/donate/37wP5rdaFgtHrEQ44M5Tntyeb9nChd8jC4)

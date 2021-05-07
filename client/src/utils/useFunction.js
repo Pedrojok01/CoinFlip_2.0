@@ -31,13 +31,13 @@ export const useFunction = (player, rawValue, args = []) => {
 
       addTransaction({ hash, from, value, wait });
     } catch (error) {
-      addNotification({
-        title: error.message || "Oops something went wrong",
-        isError: true,
-        wrapText: true,
-        icon: faExclamationTriangle,
-        hideIn: 2500,
-      });
+        addNotification({
+          title: error.message || "Oops something went wrong",
+          isError: true,
+          wrapText: true,
+          icon: faExclamationTriangle,
+          hideIn: 2500,
+        });
     }
   }, [player, rawValue, contract, addTransaction, addNotification]);
 
