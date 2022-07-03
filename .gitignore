@@ -1,6 +1,5 @@
 # dependencies
-client/node_modules
-blockchain/node_modules
+node_modules
 
 # production
 blockchain/build
@@ -9,7 +8,3 @@ blockchain/.secret
 # netlify
 client/build
 .netlify
-
-
-blockchain/package-lock.json
-client/package-lock.json

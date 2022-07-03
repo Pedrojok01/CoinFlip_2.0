@@ -16,10 +16,10 @@ Try it yourself: [coinflip-double-up-your-eth.netlify.app/](https://coinflip-dou
 
 Decentralized application built with Truffle/Infura and React for the Ethereum Network, and part of the programming course: Ethereum201 on [academy.ivanontech.com](https://academy.ivanontech.com/).
 
-
 ## Installation
 
 Make sure you have the following ready:
+
 - `npm` installed
 - [Truffle](https://www.trufflesuite.com/docs) installed globally via `npm install -g truffle` (developped on v5.3.2).
 - Run a local blockchain via [Ganache](https://www.trufflesuite.com/docs/ganache/overview), or [Ganache-cli](https://github.com/trufflesuite/ganache-cli), or register on [Infura.io](https://infura.io/) to deploy on an Ethereum network.
@@ -50,6 +50,7 @@ Next, move back into the COINFLIP 2.0 repo (`cd ../`), then type:
 ### Config
 
 On each deploy, make sure to:
+
 - Change the `COINFLIP_ADDRESS` in `/client/constants.js` to your deployed contracts address
 - Copy the new abi file into `/abis` folder
 - Enable/disable, and update the suitable networks in `truffle-config.js`
@@ -58,8 +59,7 @@ On each deploy, make sure to:
 ## Use
 
 You are now set to start your local server. Make sure you're still in `COINFLIP 2.0/client` and type:
- `npm start`
-
+`npm start`
 
 If you like it, a donation is always welcome!<br/>
 [![Donate with Bitcoin](https://en.cryptobadges.io/badge/big/37wP5rdaFgtHrEQ44M5Tntyeb9nChd8jC4)](https://en.cryptobadges.io/donate/37wP5rdaFgtHrEQ44M5Tntyeb9nChd8jC4)
