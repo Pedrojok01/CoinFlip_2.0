@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { Contract } from "@ethersproject/contracts";
-import { abi as ICoinFlip } from "./abis/coinFlip.json";
+import { abi as ICoinFlip } from "../abis/coinFlip.json";
 import { useWallet } from "./useWallet";
-import { COINFLIP_ADDRESS } from "./constants";
+import { COINFLIP_ADDRESS } from "../constants";
 
 export const useContract = (address, abi) => {
   const { library, account } = useWallet();

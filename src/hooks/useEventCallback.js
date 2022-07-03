@@ -1,9 +1,8 @@
 import { useEffect, useCallback } from "react";
-import { useCoinFlipContract } from "../useContract";
+import { useCoinFlipContract } from "./useContract";
 
 export const useEventCallback = (name, callback, deps) => {
   const contract = useCoinFlipContract();
-
   const memoizedCallback = useCallback(callback, deps);
 
   useEffect(() => {
@@ -16,5 +15,6 @@ export const useEventCallback = (name, callback, deps) => {
         contract.off(name, memoizedCallback);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [name, contract, memoizedCallback]);
 };

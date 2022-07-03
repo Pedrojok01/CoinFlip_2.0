@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";
-import { SUPPORTED_CHAINS } from "./constants";
+import { SUPPORTED_CHAINS } from "../constants";
 
 export const chains = {
   1: {
@@ -35,12 +35,10 @@ export function useEagerConnect() {
       return;
     }
 
-    window.ethereum.on("networkChanged", setTriedFalse);
     window.ethereum.on("chainChanged", setTriedFalse);
     window.ethereum.on("accountChanged", setTriedFalse);
 
     return () => {
-      window.ethereum.off("networkChanged", setTriedFalse);
       window.ethereum.off("chainChanged", setTriedFalse);
       window.ethereum.off("accountChanged", setTriedFalse);
     };

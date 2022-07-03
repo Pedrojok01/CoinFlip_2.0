@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExternalLinkAlt, faCheck, faTimes, faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { useEtherScanLink } from "../utils/useEtherScanLink";
+import { useEtherScanLink } from "../hooks/useEtherScanLink";
 import { WAITFOR_CONFIRMATIONS } from "../constants";
 import { Message } from "./Message";
 import { useAppContext } from "../AppContext";
@@ -41,6 +41,7 @@ export const Transaction = ({ hash, wait }) => {
         }
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wait]);
 
   return (

@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import { Button } from "./Button";
 import { Eth } from "./Eth";
 import { useAppContext } from "../AppContext";
-import { useWallet } from "../useWallet";
+import { useWallet } from "../hooks/useWallet";
 import { NumberInput } from "./NumberInput";
-import { useCoinFlipContract } from "../useContract";
-import { useFunction } from "../utils/useFunction";
+import { useCoinFlipContract } from "../hooks/useContract";
+import { useFunction } from "../hooks/useFunction";
 
 const useOwnerAddress = () => {
   const contract = useCoinFlipContract();

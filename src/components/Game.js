@@ -5,15 +5,15 @@ import { formatEther } from "@ethersproject/units";
 import { faTrophy, faSadTear } from "@fortawesome/free-solid-svg-icons";
 
 import { Button } from "./Button";
+import { ConnectButton } from "./ConnectButton";
 import { Eth } from "./Eth";
 import { NumberInput } from "./NumberInput";
-import { useWallet } from "../useWallet";
+import { useWallet } from "../hooks/useWallet";
 import { useAppContext } from "../AppContext";
+import { useCoinFlipContract } from "../hooks/useContract";
+import { useFunction } from "../hooks/useFunction";
+import { useEventCallback } from "../hooks/useEventCallback";
 import { ReactComponent as EthereumLogo } from "../ethereumLogo.svg";
-import { useCoinFlipContract } from "../useContract";
-import { useFunction } from "../utils/useFunction";
-import { useEventCallback } from "../utils/useEventCallback";
-import { ConnectButton } from "./ConnectButton";
 
 const StyledCoin = styled.button`
   height: 7.1rem;

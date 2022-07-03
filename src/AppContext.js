@@ -1,6 +1,6 @@
 import React, { useContext, useState, useCallback, useEffect } from "react";
-import { useReadFunction } from "./utils/useReadFunction";
-import { useWallet } from "./useWallet";
+import { useReadFunction } from "./hooks/useReadFunction";
+import { useWallet } from "./hooks/useWallet";
 import { formatResult } from "./utils/formatResult";
 import { v4 as uuidv4 } from "uuid";
 

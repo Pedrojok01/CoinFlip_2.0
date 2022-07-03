@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 
 import { SUPPORTED_CHAINS } from "../constants";
-import { useWallet, isValidChainId, chains } from "../useWallet";
+import { useWallet, isValidChainId, chains } from "../hooks/useWallet";
 
 const StyledWarning = styled.div`
   background-color: ${({ theme }) => theme.colors.complementary};

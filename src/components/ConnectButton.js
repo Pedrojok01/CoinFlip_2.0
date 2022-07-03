@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useWallet } from "../useWallet";
+import { useWallet } from "../hooks/useWallet";
 import { Button } from "./Button";
 import { Identicon } from "./Identicon";
 

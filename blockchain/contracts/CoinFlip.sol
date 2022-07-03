@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.6.6;
+pragma solidity 0.8.7;
 
 import "./Ownable.sol";
-import "@chainlink/contracts/src/v0.6/VRFConsumerBase.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 
 
-contract CoinFlip is Ownable, VRFConsumerBase {
+contract CoinFlip is Ownable, VRFConsumerBaseV2 {
 
 
 /* *** Storage ***

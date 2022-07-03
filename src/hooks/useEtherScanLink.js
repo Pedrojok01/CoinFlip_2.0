@@ -1,4 +1,4 @@
-import { useWallet, chains } from "../useWallet";
+import { useWallet, chains } from "./useWallet";
 
 export const useEtherScanLink = (id, type) => {
   const { chainId } = useWallet();

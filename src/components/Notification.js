@@ -36,6 +36,7 @@ export const Notification = ({ icon, title, isSuccess, isError, wrapText, hideIn
     setTimeout(() => {
       handleClose();
     }, [hideIn]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hideIn]);
 
   return (

@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 import { parseEther } from "@ethersproject/units";
 
-import { useCoinFlipContract } from "../useContract";
-import { calculateGasMargin } from "./calculateGasMargin";
+import { useCoinFlipContract } from "./useContract";
+import { calculateGasMargin } from "../utils/calculateGasMargin";
 import { useAppContext } from "../AppContext";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 
@@ -37,6 +37,7 @@ export const useFunction = (player, rawValue, args = []) => {
         hideIn: 2500,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player, rawValue, contract, addTransaction, addNotification]);
 
   return doCall;

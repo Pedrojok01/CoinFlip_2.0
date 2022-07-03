@@ -52,6 +52,7 @@
   "devDependencies": {
     "@chainlink/contracts": "^0.4.1",
     "@truffle/hdwallet-provider": "^2.0.9",
+    "dotenv": "^16.0.1",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.30.0",

@@ -37,21 +37,20 @@ const Wrapper = styled.span`
 
 export const NumberInput = ({ value, onChange, margin }) => {
   const [internalValue, setInternalValue] = useState(value);
-  const handleChange = useCallback(
-    (event) => {
-      const number = Number(internalValue);
-      if (!Number.isNaN(number)) {
-        onChange(Number(internalValue));
-        setInternalValue(number.toString());
-      } else {
-        setInternalValue(value);
-      }
-    },
-    [onChange, internalValue]
-  );
+  const handleChange = useCallback(() => {
+    const number = Number(internalValue);
+    if (!Number.isNaN(number)) {
+      onChange(Number(internalValue));
+      setInternalValue(number.toString());
+    } else {
+      setInternalValue(value);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onChange, internalValue]);
 
   const handleInternalChange = useCallback((event) => {
     setInternalValue(event.currentTarget.value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
