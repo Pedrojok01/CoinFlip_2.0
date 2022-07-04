@@ -8,6 +8,12 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/7f7b73fb-c34d-4063-826b-dceae8a580a2/deploy-status)](https://app.netlify.com/sites/coinflip-double-up-your-eth/deploys)
 [![Donate with Bitcoin](https://en.cryptobadges.io/badge/micro/37wP5rdaFgtHrEQ44M5Tntyeb9nChd8jC4)](https://en.cryptobadges.io/donate/37wP5rdaFgtHrEQ44M5Tntyeb9nChd8jC4)
 
+## Updates
+
+2022/07 - Switch to Chainlink VRF v2 & Update solidity compiler version to 0.8.7;
+
+## Description
+
 Dapp built on the Ethereum Network as a part of the programming course: Ethereum201 on [academy.moralis.com](https://academy.moralis.io).
 
 Try it yourself: [coinflip-double-up-your-eth.netlify.app/](https://coinflip-double-up-your-eth.netlify.app/)
