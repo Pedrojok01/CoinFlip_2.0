@@ -8,9 +8,9 @@ export const chains = {
     name: "MainNet",
     etherScanPrefix: "",
   },
-  3: {
-    name: "Ropsten",
-    etherScanPrefix: "ropsten.",
+  4: {
+    name: "Rinkeby",
+    etherScanPrefix: "rinkeby.",
   },
   42: {
     name: "Kovan",

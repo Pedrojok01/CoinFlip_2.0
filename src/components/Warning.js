@@ -29,7 +29,7 @@ export const Warning = () => {
   const isReady = useRenderTimeout();
   let warning = null;
 
-  const supportedChainNames = SUPPORTED_CHAINS.map((id) => chains[id].name).join(", ");
+  const supportedChainNames = SUPPORTED_CHAINS.map((id) => chains[id]?.name).join(", ");
 
   if (!isMetaMask) {
     warning = "No MetaMask found, MetaMask is required to interact.";
