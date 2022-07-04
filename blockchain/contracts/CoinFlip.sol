@@ -2,23 +2,32 @@
 pragma solidity 0.8.7;
 
 import "./Ownable.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 
-
 contract CoinFlip is Ownable, VRFConsumerBaseV2 {
+    VRFCoordinatorV2Interface COORDINATOR;
+    LinkTokenInterface LINKTOKEN;
 
+    /* Storage:
+     ***********/
 
-/* *** Storage ***
-===================*/
+    address constant vrfCoordinator = 0x6168499c0cFfCaCD319c818142124B7A15E857ab;
+    address constant link_token_contract = 0x01BE23585060835E02B77ef475b0Cc51aA1e0709;
 
+    bytes32 constant keyHash = 0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc;
+    uint16 constant requestConfirmations = 3;
+    uint32 constant callbackGasLimit = 100000;
+    uint32 constant numWords = 1;
+    uint64 subscriptionId;
     uint256 private contractBalance;
-    uint256 public randomResult;
-    bytes32 internal keyHash;  //For Chailink oracle
-    uint256 internal fee;      //For Chailink oracle
+
+    //uint256[] public randomWords;
+    uint256 public requestId;
 
     struct Temp {
-        bytes32 id;
+        uint256 id;
         uint256 result;
         address playerAddress;
     }
@@ -32,98 +41,85 @@ contract CoinFlip is Ownable, VRFConsumerBaseV2 {
     }
 
     mapping(address => PlayerByAddress) public playersByAddress; //to check who is the player
-    mapping(bytes32 => Temp) public temps; //to check who is the sender of a pending bet
+    mapping(uint256 => Temp) public temps; //to check who is the sender of a pending bet by Id
 
-
-/* *** Events ***
-==================*/
+    /* Events:
+     *********/
 
     event DepositToContract(address user, uint256 depositAmount, uint256 newBalance);
     event Withdrawal(address player, uint256 amount);
-    event NewIdRequest(address indexed player, bytes32 requestId);
-    event GeneratedRandomNumber(bytes32 requestId, uint256 randomNumber);
+    event NewIdRequest(address indexed player, uint256 requestId);
+    event GeneratedRandomNumber(uint256 requestId, uint256 randomNumber);
     event BetResult(address indexed player, bool victory, uint256 amount);
 
+    /* Constructor:
+     **************/
 
-/* *** Constructor ***
-=======================*/
-
-    constructor() payable public initCosts(0.2 ether)
-        VRFConsumerBase(
-            0xdD3782915140c8f3b190B5D67eAc6dc5760C46E9, // VRF Coordinator
-            0xa36085F69e2889c224210F603D836748e7dC0088  // LINK Token
-        )
-    {
-        keyHash = 0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4;
-        fee = 0.1 * 10 ** 18;
+    constructor(uint64 _subscriptionId) payable initCosts(0.1 ether) VRFConsumerBaseV2(vrfCoordinator) {
+        COORDINATOR = VRFCoordinatorV2Interface(vrfCoordinator);
+        LINKTOKEN = LinkTokenInterface(link_token_contract);
+        subscriptionId = _subscriptionId;
         contractBalance += msg.value;
     }
 
+    /* Modifiers:
+     ************/
 
-/* *** Modifiers ***
-=====================*/
-
-    modifier initCosts(uint initCost){
-        require(msg.value >= initCost, "Contract needs some ETH to initialize the contract balance.");
+    modifier initCosts(uint256 initCost) {
+        require(msg.value >= initCost, "Contract needs some ETH.");
         _;
     }
-    
-    modifier betConditions {
+
+    modifier betConditions() {
         require(msg.value >= 0.001 ether, "Insuffisant amount, please increase your bet!");
-        require(msg.value <= getContractBalance()/2, "You can't bet more than half the contract's balance!");
-        require(playersByAddress[msg.sender].betOngoing == false, "A bet is already ongoing with this address.");
+        require(msg.value <= getContractBalance() / 2, "Can't bet more than half the contract's balance!");
+        require(!playersByAddress[msg.sender].betOngoing, "Bet already ongoing with this address");
         _;
     }
 
+    /* Functions:
+     *************/
 
-/* *** Functions ***
-=====================*/
+    function bet(uint256 _betChoice) public payable betConditions {
+        require(_betChoice == 0 || _betChoice == 1, "Must be either 0 or 1");
 
-    function bet(uint256 _betChoice) payable public betConditions {
-        require(_betChoice == 0 || _betChoice == 1, "The choice must be either 0 or 1");
-
-        uint256 seed = (681717666514 + block.number + block.difficulty);
         playersByAddress[msg.sender].playerAddress = msg.sender;
         playersByAddress[msg.sender].betChoice = _betChoice;
         playersByAddress[msg.sender].betOngoing = true;
         playersByAddress[msg.sender].betAmount = msg.value;
-        contractBalance = contractBalance + playersByAddress[msg.sender].betAmount;
-        
-        bytes32 newRequestId = getRandomNumber(seed);
-        temps[newRequestId].playerAddress = msg.sender;
-        temps[newRequestId].id = newRequestId;
+        contractBalance += playersByAddress[msg.sender].betAmount;
 
-        emit NewIdRequest(msg.sender, newRequestId);
+        requestId = requestRandomWords();
+        temps[requestId].playerAddress = msg.sender;
+        temps[requestId].id = requestId;
+
+        emit NewIdRequest(msg.sender, requestId);
     }
 
-
-    function getRandomNumber(uint256 userProvidedSeed) internal returns (bytes32 requestId) {
-        require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK - fill contract with faucet");
-        
-        return requestRandomness(keyHash, fee, userProvidedSeed);
+    // Assumes the subscription is funded sufficiently.
+    function requestRandomWords() public returns (uint256) {
+        return
+            COORDINATOR.requestRandomWords(keyHash, subscriptionId, requestConfirmations, callbackGasLimit, numWords);
     }
-    
 
-    function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
-        randomResult = randomness%2;
+    function fulfillRandomWords(uint256, uint256[] memory _randomWords) internal override {
+        uint256 randomResult = _randomWords[0] % 2;
         temps[requestId].result = randomResult;
-           
-        checkResult(randomResult, requestId);
 
+        checkResult(randomResult, requestId);
         emit GeneratedRandomNumber(requestId, randomResult);
     }
 
-
-    function checkResult(uint256 _randomResult, bytes32 _requestId) public returns (bool) {
+    function checkResult(uint256 _randomResult, uint256 _requestId) private returns (bool) {
         address player = temps[_requestId].playerAddress;
         bool win = false;
-        uint256 amountWon;
+        uint256 amountWon = 0;
 
-        if(playersByAddress[player].betChoice == _randomResult) {
+        if (playersByAddress[player].betChoice == _randomResult) {
             win = true;
-            amountWon = playersByAddress[player].betAmount*2;
+            amountWon = playersByAddress[player].betAmount * 2;
             playersByAddress[player].balance = playersByAddress[player].balance + amountWon;
-            contractBalance = contractBalance - amountWon;
+            contractBalance -= amountWon;
         }
 
         emit BetResult(player, win, amountWon);
@@ -131,52 +127,70 @@ contract CoinFlip is Ownable, VRFConsumerBaseV2 {
         playersByAddress[player].betAmount = 0;
         playersByAddress[player].betOngoing = false;
 
-        delete(temps[_requestId]);
+        delete (temps[_requestId]);
         return win;
     }
 
-
-    function deposit() public payable {
+    function deposit() external payable {
         require(msg.value > 0);
-
         contractBalance += msg.value;
-
         emit DepositToContract(msg.sender, msg.value, contractBalance);
     }
 
-
-    function getPlayerBalance() public view returns (uint256) {
-        return playersByAddress[msg.sender].balance;
-    }
-
-
-    function getContractBalance() public view returns (uint256) {
-        return contractBalance;
-    }
-
-
-    function withdrawPlayerBalance() public {
+    function withdrawPlayerBalance() external {
         require(msg.sender != address(0), "This address doesn't exist.");
         require(playersByAddress[msg.sender].balance > 0, "You don't have any fund to withdraw.");
-        require(playersByAddress[msg.sender].betOngoing == false, "this address still has an open bet.");
+        require(!playersByAddress[msg.sender].betOngoing, "this address still has an open bet.");
 
         uint256 amount = playersByAddress[msg.sender].balance;
-        msg.sender.transfer(amount);
+        payable(msg.sender).transfer(amount);
         delete (playersByAddress[msg.sender]);
 
         emit Withdrawal(msg.sender, amount);
     }
 
+    /* View functions:
+     *******************/
 
-    function withdrawContractBalance() public onlyOwner {
-        payout(msg.sender);
+    function getPlayerBalance() external view returns (uint256) {
+        return playersByAddress[msg.sender].balance;
     }
 
-    function payout(address payable to) internal returns (uint256) {
+    function getContractBalance() public view returns (uint256) {
+        return contractBalance;
+    }
+
+    /* PRIVATE :
+     ***********/
+
+    function withdrawContractBalance() external onlyOwner {
+        _payout(payable(msg.sender));
+        if (LINKTOKEN.balanceOf(address(this)) > 0) {
+            bool isSuccess = LINKTOKEN.transfer(msg.sender, LINKTOKEN.balanceOf(address(this)));
+            require(isSuccess, "Link withdraw failed");
+        }
+    }
+
+    function addConsumer(address consumerAddress) external onlyOwner {
+        COORDINATOR.addConsumer(subscriptionId, consumerAddress);
+    }
+
+    function removeConsumer(address consumerAddress) external onlyOwner {
+        // Remove a consumer contract from the subscription.
+        COORDINATOR.removeConsumer(subscriptionId, consumerAddress);
+    }
+
+    function cancelSubscription(address receivingWallet) external onlyOwner {
+        // Cancel the subscription and send the remaining LINK to a wallet address.
+        COORDINATOR.cancelSubscription(subscriptionId, receivingWallet);
+        subscriptionId = 0;
+    }
+
+    function _payout(address payable to) private returns (uint256) {
         require(contractBalance != 0, "No funds to withdraw");
 
         uint256 toTransfer = address(this).balance;
-        contractBalance -= toTransfer;
+        contractBalance = 0;
         to.transfer(toTransfer);
         return toTransfer;
     }

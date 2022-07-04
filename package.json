@@ -35,7 +35,7 @@
     "lint:fix": "eslint --fix",
     "prettier:check": "prettier --check .",
     "prettier:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,css,md,json,html}\" .prettierrc --config ./.prettierrc",
-    "slither": "slither ./Truffle/contracts --truffle-build-directory ./Truffle --solc-remaps @openzeppelin=node_modules/@openzeppelin --exclude naming-convention,external-function,low-level-calls --buidler-ignore-compile"
+    "slither": "slither ./blockchain/contracts --solc-remaps @chainlink=node_modules/@chainlink --exclude naming-convention,external-function,low-level-calls --buidler-ignore-compile"
   },
   "browserslist": {
     "production": [
