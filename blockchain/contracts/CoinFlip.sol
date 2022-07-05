@@ -23,9 +23,6 @@ contract CoinFlip is Ownable, VRFConsumerBaseV2 {
     uint64 subscriptionId;
     uint256 private contractBalance;
 
-    //uint256[] public randomWords;
-    uint256 public requestId;
-
     struct Temp {
         uint256 id;
         uint256 result;
@@ -89,7 +86,7 @@ contract CoinFlip is Ownable, VRFConsumerBaseV2 {
         playersByAddress[msg.sender].betAmount = msg.value;
         contractBalance += playersByAddress[msg.sender].betAmount;
 
-        requestId = requestRandomWords();
+        uint256 requestId = requestRandomWords();
         temps[requestId].playerAddress = msg.sender;
         temps[requestId].id = requestId;
 
@@ -102,12 +99,12 @@ contract CoinFlip is Ownable, VRFConsumerBaseV2 {
             COORDINATOR.requestRandomWords(keyHash, subscriptionId, requestConfirmations, callbackGasLimit, numWords);
     }
 
-    function fulfillRandomWords(uint256, uint256[] memory _randomWords) internal override {
+    function fulfillRandomWords(uint256 _requestId, uint256[] memory _randomWords) internal override {
         uint256 randomResult = _randomWords[0] % 2;
-        temps[requestId].result = randomResult;
+        temps[_requestId].result = randomResult;
 
-        checkResult(randomResult, requestId);
-        emit GeneratedRandomNumber(requestId, randomResult);
+        checkResult(randomResult, _requestId);
+        emit GeneratedRandomNumber(_requestId, randomResult);
     }
 
     function checkResult(uint256 _randomResult, uint256 _requestId) private returns (bool) {
