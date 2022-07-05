@@ -6,7 +6,7 @@ blockchain/build
 blockchain/.secret
 
 # netlify
-client/build
+build
 .netlify
 
 # misc

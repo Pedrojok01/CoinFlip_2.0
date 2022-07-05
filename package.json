@@ -25,7 +25,9 @@
     "uuid": "^8.1.0",
     "yarn": "^1.22.19"
   },
-  "homepage": "https://github.com/Pedrojok01/CoinFlip_2.0",
+  "bugs": {
+    "url": "https://github.com/Pedrojok01/CoinFlip_2.0/issues"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
