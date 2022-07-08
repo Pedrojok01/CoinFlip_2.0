@@ -93,7 +93,7 @@ contract CoinFlip is Ownable, VRFConsumerBaseV2 {
         emit NewIdRequest(msg.sender, requestId);
     }
 
-    // Assumes the subscription is funded sufficiently.
+    /// @notice Assumes the subscription is funded sufficiently.
     function requestRandomWords() public returns (uint256) {
         return
             COORDINATOR.requestRandomWords(keyHash, subscriptionId, requestConfirmations, callbackGasLimit, numWords);
