@@ -25,8 +25,8 @@ Try it yourself: [coinflip-double-up-your-eth.netlify.app/](https://coinflip-dou
 - [![React][react.js]][react-url]
 - [![web3.js]][web3.js-url]
 - [![solidity]][solidity-url]
-- [![truffle]][truffle-url]
 - [![chainlink]][chainlink-url]
+- [![truffle]][truffle-url]
 - [![ganache]][ganache-url]
 
 ## Installation
