@@ -2,11 +2,12 @@
 pragma solidity 0.8.7;
 
 import "./Ownable.sol";
+import "./ReentrancyGuard.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 
-contract CoinFlip is Ownable, VRFConsumerBaseV2 {
+contract CoinFlip is Ownable, VRFConsumerBaseV2, ReentrancyGuard {
     VRFCoordinatorV2Interface COORDINATOR;
     LinkTokenInterface LINKTOKEN;
 
@@ -18,7 +19,7 @@ contract CoinFlip is Ownable, VRFConsumerBaseV2 {
 
     bytes32 constant keyHash = 0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc;
     uint16 constant requestConfirmations = 3;
-    uint32 constant callbackGasLimit = 100000;
+    uint32 constant callbackGasLimit = 1e5;
     uint32 constant numWords = 1;
     uint64 subscriptionId;
     uint256 private contractBalance;
@@ -77,7 +78,7 @@ contract CoinFlip is Ownable, VRFConsumerBaseV2 {
     /* Functions:
      *************/
 
-    function bet(uint256 _betChoice) public payable betConditions {
+    function bet(uint256 _betChoice) public payable betConditions nonReentrant {
         require(_betChoice == 0 || _betChoice == 1, "Must be either 0 or 1");
 
         playersByAddress[msg.sender].playerAddress = msg.sender;
@@ -134,7 +135,7 @@ contract CoinFlip is Ownable, VRFConsumerBaseV2 {
         emit DepositToContract(msg.sender, msg.value, contractBalance);
     }
 
-    function withdrawPlayerBalance() external {
+    function withdrawPlayerBalance() external nonReentrant {
         require(msg.sender != address(0), "This address doesn't exist.");
         require(playersByAddress[msg.sender].balance > 0, "You don't have any fund to withdraw.");
         require(!playersByAddress[msg.sender].betOngoing, "this address still has an open bet.");
@@ -177,7 +178,7 @@ contract CoinFlip is Ownable, VRFConsumerBaseV2 {
         COORDINATOR.removeConsumer(subscriptionId, consumerAddress);
     }
 
-    function cancelSubscription(address receivingWallet) external onlyOwner {
+    function cancelSubscription(address receivingWallet) external onlyOwner nonReentrant {
         // Cancel the subscription and send the remaining LINK to a wallet address.
         COORDINATOR.cancelSubscription(subscriptionId, receivingWallet);
         subscriptionId = 0;
