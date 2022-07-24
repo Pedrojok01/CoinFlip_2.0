@@ -10,6 +10,7 @@
 [![Donate with Bitcoin](https://en.cryptobadges.io/badge/micro/37wP5rdaFgtHrEQ44M5Tntyeb9nChd8jC4)](https://en.cryptobadges.io/donate/37wP5rdaFgtHrEQ44M5Tntyeb9nChd8jC4)
 
 </div>
+
 ## Updates
 
 2022/07 - Switch to Chainlink VRF v2 & Update solidity compiler version to 0.8.7;
