@@ -8,13 +8,9 @@ export const chains = {
     name: "MainNet",
     etherScanPrefix: "",
   },
-  4: {
-    name: "Rinkeby",
-    etherScanPrefix: "rinkeby.",
-  },
-  42: {
-    name: "Kovan",
-    etherScanPrefix: "kovan.",
+  5: {
+    name: "Goerli",
+    etherScanPrefix: "goerli.",
   },
 };
 
@@ -39,8 +35,8 @@ export function useEagerConnect() {
     window.ethereum.on("accountChanged", setTriedFalse);
 
     return () => {
-      window.ethereum.off("chainChanged", setTriedFalse);
-      window.ethereum.off("accountChanged", setTriedFalse);
+      window.ethereum.removeListener("chainChanged", setTriedFalse);
+      window.ethereum.removeListener("accountChanged", setTriedFalse);
     };
   }, [setTried]);
 
