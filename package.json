@@ -1,30 +1,9 @@
 {
   "name": "coinflip",
-  "version": "3.0.0",
+  "version": "3.0.2",
   "private": false,
   "author": "Pedrojok01",
   "licence": "MIT",
-  "dependencies": {
-    "@emotion/react": "~11.1.5",
-    "@emotion/styled": "^11.3.0",
-    "@ethersproject/bignumber": "^5.1.1",
-    "@ethersproject/contracts": "^5.1.1",
-    "@ethersproject/providers": "^5.1.2",
-    "@ethersproject/units": "^5.1.0",
-    "@fortawesome/fontawesome-svg-core": "^1.2.28",
-    "@fortawesome/free-solid-svg-icons": "^5.13.0",
-    "@fortawesome/react-fontawesome": "^0.1.10",
-    "@web3-react/core": "^6.0.9",
-    "@web3-react/injected-connector": "^6.0.7",
-    "color": "^3.1.2",
-    "jazzicon": "^1.5.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-scripts": "4.0.3",
-    "sanitize.css": "^12.0.1",
-    "uuid": "^8.1.0",
-    "yarn": "^1.22.19"
-  },
   "bugs": {
     "url": "https://github.com/Pedrojok01/CoinFlip_2.0/issues"
   },
@@ -39,6 +18,27 @@
     "prettier:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,css,md,json,html}\" .prettierrc --config ./.prettierrc",
     "slither": "slither ./blockchain/contracts --solc-remaps @chainlink=node_modules/@chainlink --exclude naming-convention,external-function,low-level-calls --buidler-ignore-compile"
   },
+  "dependencies": {
+    "@emotion/react": "~11.10.5",
+    "@emotion/styled": "^11.3.0",
+    "@ethersproject/bignumber": "^5.1.1",
+    "@ethersproject/contracts": "^5.1.1",
+    "@ethersproject/providers": "^5.1.2",
+    "@ethersproject/units": "^5.1.0",
+    "@fortawesome/fontawesome-svg-core": "^6.2.1",
+    "@fortawesome/free-solid-svg-icons": "^6.2.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@web3-react/core": "^6.0.9",
+    "@web3-react/injected-connector": "^6.0.7",
+    "color": "^4.2.3",
+    "jazzicon": "^1.5.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "sanitize.css": "^13.0.0",
+    "uuid": "^9.0.0",
+    "yarn": "^1.22.19"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -52,7 +52,7 @@
     ]
   },
   "devDependencies": {
-    "@chainlink/contracts": "^0.4.1",
+    "@chainlink/contracts": "^0.5.1",
     "@truffle/hdwallet-provider": "^2.0.9",
     "dotenv": "^16.0.1",
     "eslint-config-prettier": "^8.5.0",

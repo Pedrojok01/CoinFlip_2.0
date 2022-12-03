@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { App } from "./App";
 import { darkTheme, lightTheme } from "./theme";
 import { ThemeProvider } from "@emotion/react";
@@ -23,13 +23,13 @@ const InnerApp = () => {
   );
 };
 
-ReactDOM.render(
+const root = createRoot(document.getElementById("root"));
+root.render(
   <React.StrictMode>
     <Web3ReactProvider getLibrary={getLibrary}>
       <AppContextProvider>
         <InnerApp />
       </AppContextProvider>
     </Web3ReactProvider>
-  </React.StrictMode>,
-  document.getElementById("root")
+  </React.StrictMode>
 );
