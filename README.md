@@ -7,13 +7,13 @@
 [![MIT License](https://img.shields.io/github/license/Pedrojok01/CoinFlip_2.0)](https://github.com/Pedrojok01/CoinFlip_2.0/blob/main/License)
 [![LinkedIn](https://img.shields.io/badge/-LinkedIn-black)](https://www.linkedin.com/in/pierre-e/)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/7f7b73fb-c34d-4063-826b-dceae8a580a2/deploy-status)](https://app.netlify.com/sites/coinflip-double-up-your-eth/deploys)
-[![Donate with Bitcoin](https://en.cryptobadges.io/badge/micro/37wP5rdaFgtHrEQ44M5Tntyeb9nChd8jC4)](https://en.cryptobadges.io/donate/37wP5rdaFgtHrEQ44M5Tntyeb9nChd8jC4)
 
 </div>
 
 ## Updates
 
 2022/07 - Switch to Chainlink VRF v2 & Update solidity compiler version to 0.8.7;
+2022/12 - Switch to Goerli network v2 & upgrade all deps & Update solc to 0.8.16;
 
 ## Description
 
@@ -21,7 +21,7 @@ Decentralized application (Dapp), EVM compatible, built as a part of the program
 
 Try it yourself: [coinflip-double-up-your-eth.netlify.app/](https://coinflip-double-up-your-eth.netlify.app/)
 
-![Preview](./Preview.png)
+![Preview](./preview.gif)
 
 ## Built With
 
@@ -51,18 +51,19 @@ In your terminal, go to the COINFLIP 2.0 repo and type:
 
 To deploy your smart-contracts:
 
-- Run `truffle migrate --network <<network name here>>` to deploy to the network of your choice. So for Rinkeby, type `truffle migrate --reset --network rinkeby`
-- Replace the contract address in `client/constants`
-- Replace the abi file in `client/abis/coinFlip.json`
-- Make sure to fund the contract with some ETH ( [Faucet for the Rinkeby network](https://rinkebyfaucet.com) )
-- Make sure to subscribe to Chainlink VRF v2 ( [Subscribtion for the Rinkeby network](https://vrf.chain.link/rinkeby) ) ( [LINK Faucet for subscribtion on the Rinkeby network](https://faucets.chain.link/rinkeby) )
+- Make sure to subscribe to Chainlink VRF v2 ( [Subscribtion to Chainlink VRF on Goerli](https://vrf.chain.link/goerli/new) ) ( [LINK Faucet](https://faucets.chain.link/) )
+- Then add your subscription id to the migration file: `blockchain/migrations/1_CoinFlip_migration.js`
+- Run `truffle migrate --network <<network name here>>` to deploy to the network of your choice. So for Goerli, type `truffle migrate --network goerli`
+- Replace the contract address in `src/constants.js`
+- Replace the abi file in `src/abis/coinFlip.js`
+- Make sure to fund the contract with some ETH ( [Faucet for the Goerli network](https://goerlifaucet.org/) )
 
 ### Client & Config
 
 On each deploy, make sure to:
 
-- Change the `COINFLIP_ADDRESS` in `/client/constants.js` to your deployed contracts address
-- Copy the new abi file into `/abis` folder
+- Change the `COINFLIP_ADDRESS` in `/src/constants.js` to your deployed contracts address
+- Copy the new abi file into the `/abis` folder
 - Enable/disable, and update the suitable networks in `truffle-config.js`
 - Get your mnemonic seed phrase add it to `blockchain/.secret`
 
@@ -79,8 +80,14 @@ On each deploy, make sure to:
 You are now set to start your local server. Make sure you're still in `COINFLIP 2.0` and type:
 `yarn start`
 
-If you like it, a donation is always welcome!<br/>
-[![Donate with Bitcoin](https://en.cryptobadges.io/badge/big/37wP5rdaFgtHrEQ44M5Tntyeb9nChd8jC4)](https://en.cryptobadges.io/donate/37wP5rdaFgtHrEQ44M5Tntyeb9nChd8jC4)
+<br/>
+
+<div align="center">
+<h2># Enjoy!!!</h2>
+
+### ⭐️ ... and don't forget to leave a star if you like it! ⭐️
+
+</div>
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
