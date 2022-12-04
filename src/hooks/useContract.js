@@ -20,4 +20,4 @@ export const useContract = (address, abi) => {
   }, [address, abi, library, account]);
 };
 
-export const useCoinFlipContract = () => useContract(COINFLIP_ADDRESS, abi.abi);
+export const useCoinFlipContract = () => useContract(COINFLIP_ADDRESS, abi);

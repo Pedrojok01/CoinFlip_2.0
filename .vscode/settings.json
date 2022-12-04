@@ -1,4 +1,4 @@
 {
   "editor.formatOnSave": true,
-  "solidity.compileUsingRemoteVersion": "v0.8.7+commit.e28d00a7"
+  "solidity.compileUsingRemoteVersion": "v0.8.16+commit.e28d00a7"
 }
