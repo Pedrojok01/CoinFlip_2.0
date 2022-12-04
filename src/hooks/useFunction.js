@@ -30,7 +30,7 @@ export const useFunction = (player, rawValue, args = []) => {
       addTransaction({ hash, from, value, wait });
     } catch (error) {
       addNotification({
-        title: error.message || "Oops something went wrong",
+        title: error.reason ? error.reason : error.message || "Oops something went wrong",
         isError: true,
         wrapText: true,
         icon: faExclamationTriangle,

@@ -39,8 +39,8 @@ export const App = () => {
       <Main>
         <Card>
           <Game />
-          <Admin />
         </Card>
+        <Admin />
       </Main>
       <Footer />
     </Wrapper>

@@ -42,24 +42,12 @@ const StyledCoinWrapper = styled.div`
   margin-bottom: ${({ theme }) => `${theme.space.m}px`};
 `;
 
-const TailsCoin = ({ onClick }) => {
-  return <StyledCoin onClick={onClick}>Ξ</StyledCoin>;
-};
-
-const HeadsCoin = ({ onClick }) => {
-  return (
-    <StyledCoin onClick={onClick} marginRight>
-      <EthereumLogo />
-    </StyledCoin>
-  );
-};
-
 export const Game = () => {
   const { isActive, account } = useWallet();
   const { balance, profit, getContractBalance, syncAll, addNotification } = useAppContext();
   const contract = useCoinFlipContract();
   const [betAmount, setBet] = useState(0.01);
-  const betChoice = 0;
+  const [betChoice, setBetChoice] = useState(0);
 
   useEventCallback(
     "BetResult",
@@ -82,6 +70,11 @@ export const Game = () => {
   const doFlip = useFunction("bet", betAmount, [betChoice]);
   const collectFunds = useFunction("withdrawPlayerBalance");
 
+  const handleBet = (bet) => {
+    setBetChoice(bet);
+    doFlip();
+  };
+
   if (!isActive || !account) {
     return <ConnectButton block>Connect your wallet to start</ConnectButton>;
   }
@@ -93,8 +86,7 @@ export const Game = () => {
   return (
     <div>
       <h2>Hi, {account.substring(0, 5) + "..." + account.substring(account.length - 5)}</h2>
-      <p>Ready to make some money? Enter the amount to bet and the coin side.</p>
-      <p>Good luck!</p>
+      <p>Ready to make some money? Enter the amount to bet and pick your side! Good luck!</p>
       <p
         style={{
           fontStyle: "italic",
@@ -103,27 +95,45 @@ export const Game = () => {
         }}
       >
         Note: the result might take up to a few minutes. Just go grab a coffee and relax, you will get notified once the
-        flip is over. In the meantime, you can play as many coins as you want!
+        flip is over.
       </p>
       <p>
         Account balance: <Eth>{balance}</Eth> <br />
         Your profit: <Eth>{profit}</Eth> {profit && profit !== "0.0" && <Button onClick={collectFunds}>Collect</Button>}
       </p>
-      <NumberInput onChange={setBet} value={betAmount} />
-      <p
-        style={{
-          marginTop: 2,
-          fontStyle: "italic",
-          fontSize: "0.7em",
-          opacity: 0.91,
-        }}
-      >
-        Minimum required bet: <Eth>0.001</Eth>
-      </p>
-      <StyledCoinWrapper>
-        <HeadsCoin betChoice={0} onClick={doFlip} />
-        <TailsCoin betChoice={1} onClick={doFlip} />
-      </StyledCoinWrapper>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <NumberInput onChange={setBet} value={betAmount} />
+        <p
+          style={{
+            marginTop: 2,
+            fontStyle: "italic",
+            fontSize: "0.7em",
+            opacity: 0.91,
+          }}
+        >
+          Minimum required bet: <Eth>0.001</Eth>
+        </p>
+        <StyledCoinWrapper>
+          <div onClick={() => handleBet(0)}>
+            <HeadsCoin betChoice={0} onClick={doFlip} />
+          </div>
+          <div onClick={() => handleBet(1)}>
+            <TailsCoin betChoice={1} onClick={doFlip} />
+          </div>
+        </StyledCoinWrapper>
+      </div>
     </div>
+  );
+};
+
+const TailsCoin = () => {
+  return <StyledCoin>Ξ</StyledCoin>;
+};
+
+const HeadsCoin = () => {
+  return (
+    <StyledCoin marginRight>
+      <EthereumLogo />
+    </StyledCoin>
   );
 };

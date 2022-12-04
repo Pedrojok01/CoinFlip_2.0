@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 
 import { Button } from "./Button";
+import { Card } from "./Card";
 import { Eth } from "./Eth";
-import { useAppContext } from "../AppContext";
-import { useWallet } from "../hooks/useWallet";
 import { NumberInput } from "./NumberInput";
+import { useAppContext } from "../AppContext";
 import { useCoinFlipContract } from "../hooks/useContract";
 import { useFunction } from "../hooks/useFunction";
+import { useWallet } from "../hooks/useWallet";
 
 const useOwnerAddress = () => {
   const contract = useCoinFlipContract();
@@ -37,16 +38,17 @@ export const Admin = () => {
   }
 
   return (
-    <div>
-      <hr style={{ marginTop: 20, marginBottom: 20, opacity: 0.34 }} />
+    <Card>
       <h2>Hi Boss!</h2>
-      <p>
-        Game balance: <Eth>{contractBalance}</Eth>
-        <br />
-        Deposit: <NumberInput onChange={setDeposit} value={deposit} /> <Button onClick={doDeposit}>Confirm</Button>
-        <br />
-        <Button onClick={doWithdrawAll}>Withdraw all</Button>
+      <p style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+        <span>
+          Game balance: <Eth>{contractBalance}</Eth> <Button onClick={doWithdrawAll}>Withdraw all</Button>
+        </span>
+
+        <span>
+          Deposit: <NumberInput onChange={setDeposit} value={deposit} /> <Button onClick={doDeposit}>Confirm</Button>
+        </span>
       </p>
-    </div>
+    </Card>
   );
 };
