@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.7;
+pragma solidity 0.8.16;
 
 import "./Ownable.sol";
 import "./ReentrancyGuard.sol";
@@ -14,10 +14,10 @@ contract CoinFlip is Ownable, VRFConsumerBaseV2, ReentrancyGuard {
     /* Storage:
      ***********/
 
-    address constant vrfCoordinator = 0x6168499c0cFfCaCD319c818142124B7A15E857ab;
-    address constant link_token_contract = 0x01BE23585060835E02B77ef475b0Cc51aA1e0709;
+    address constant vrfCoordinator = 0x2Ca8E0C643bDe4C2E08ab1fA0da3401AdAD7734D;
+    address constant link_token_contract = 0x326C977E6efc84E512bB9C30f76E30c160eD06FB;
 
-    bytes32 constant keyHash = 0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc;
+    bytes32 constant keyHash = 0x79d3d8832d904592c0bf9818b621522c988bb8b0c05cdc3b15aea1b6e8db0c15;
     uint16 constant requestConfirmations = 3;
     uint32 constant callbackGasLimit = 1e5;
     uint32 constant numWords = 1;
@@ -64,14 +64,14 @@ contract CoinFlip is Ownable, VRFConsumerBaseV2, ReentrancyGuard {
      ************/
 
     modifier initCosts(uint256 initCost) {
-        require(msg.value >= initCost, "Contract needs some ETH.");
+        require(msg.value >= initCost, "CoinFlip: Contract needs ETH");
         _;
     }
 
     modifier betConditions() {
-        require(msg.value >= 0.001 ether, "Insuffisant amount, please increase your bet!");
-        require(msg.value <= getContractBalance() / 2, "Can't bet more than half the contract's balance!");
-        require(!playersByAddress[msg.sender].betOngoing, "Bet already ongoing with this address");
+        require(msg.value >= 0.001 ether, "CoinFlip: amount insuffisant");
+        require(msg.value <= getContractBalance() / 2, "CoinFlip: amount too big");
+        require(!playersByAddress[_msgSender()].betOngoing, "CoinFlip: Bet already ongoing");
         _;
     }
 
@@ -79,19 +79,21 @@ contract CoinFlip is Ownable, VRFConsumerBaseV2, ReentrancyGuard {
      *************/
 
     function bet(uint256 _betChoice) public payable betConditions nonReentrant {
-        require(_betChoice == 0 || _betChoice == 1, "Must be either 0 or 1");
+        require(_betChoice == 0 || _betChoice == 1, "CoinFlip: Must be 0 or 1");
 
-        playersByAddress[msg.sender].playerAddress = msg.sender;
-        playersByAddress[msg.sender].betChoice = _betChoice;
-        playersByAddress[msg.sender].betOngoing = true;
-        playersByAddress[msg.sender].betAmount = msg.value;
-        contractBalance += playersByAddress[msg.sender].betAmount;
+        address player = _msgSender();
+
+        playersByAddress[player].playerAddress = player;
+        playersByAddress[player].betChoice = _betChoice;
+        playersByAddress[player].betOngoing = true;
+        playersByAddress[player].betAmount = msg.value;
+        contractBalance += playersByAddress[player].betAmount;
 
         uint256 requestId = requestRandomWords();
-        temps[requestId].playerAddress = msg.sender;
+        temps[requestId].playerAddress = player;
         temps[requestId].id = requestId;
 
-        emit NewIdRequest(msg.sender, requestId);
+        emit NewIdRequest(player, requestId);
     }
 
     /// @notice Assumes the subscription is funded sufficiently.
@@ -132,40 +134,41 @@ contract CoinFlip is Ownable, VRFConsumerBaseV2, ReentrancyGuard {
     function deposit() external payable {
         require(msg.value > 0);
         contractBalance += msg.value;
-        emit DepositToContract(msg.sender, msg.value, contractBalance);
+        emit DepositToContract(_msgSender(), msg.value, contractBalance);
     }
 
     function withdrawPlayerBalance() external nonReentrant {
-        require(msg.sender != address(0), "This address doesn't exist.");
-        require(playersByAddress[msg.sender].balance > 0, "You don't have any fund to withdraw.");
-        require(!playersByAddress[msg.sender].betOngoing, "this address still has an open bet.");
+        address player = _msgSender();
+        require(player != address(0), "CoinFlip: This address doesn't exist");
+        require(playersByAddress[player].balance > 0, "CoinFlip: No fund to withdraw");
+        require(!playersByAddress[player].betOngoing, "CoinFlip: Bet ongoing");
 
-        uint256 amount = playersByAddress[msg.sender].balance;
-        payable(msg.sender).transfer(amount);
-        delete (playersByAddress[msg.sender]);
+        uint256 amount = playersByAddress[player].balance;
+        payable(player).transfer(amount);
+        delete (playersByAddress[player]);
 
-        emit Withdrawal(msg.sender, amount);
+        emit Withdrawal(player, amount);
     }
 
     /* View functions:
      *******************/
 
     function getPlayerBalance() external view returns (uint256) {
-        return playersByAddress[msg.sender].balance;
+        return playersByAddress[_msgSender()].balance;
     }
 
     function getContractBalance() public view returns (uint256) {
         return contractBalance;
     }
 
-    /* PRIVATE :
-     ***********/
+    /* Restricted :
+     **************/
 
     function withdrawContractBalance() external onlyOwner {
-        _payout(payable(msg.sender));
+        _payout();
         if (LINKTOKEN.balanceOf(address(this)) > 0) {
-            bool isSuccess = LINKTOKEN.transfer(msg.sender, LINKTOKEN.balanceOf(address(this)));
-            require(isSuccess, "Link withdraw failed");
+            bool isSuccess = LINKTOKEN.transfer(owner(), LINKTOKEN.balanceOf(address(this)));
+            require(isSuccess, "CoinFlip: Link withdraw failed");
         }
     }
 
@@ -180,16 +183,20 @@ contract CoinFlip is Ownable, VRFConsumerBaseV2, ReentrancyGuard {
 
     function cancelSubscription(address receivingWallet) external onlyOwner nonReentrant {
         // Cancel the subscription and send the remaining LINK to a wallet address.
-        COORDINATOR.cancelSubscription(subscriptionId, receivingWallet);
+        uint64 temp = subscriptionId;
         subscriptionId = 0;
+        COORDINATOR.cancelSubscription(temp, receivingWallet);
     }
 
-    function _payout(address payable to) private returns (uint256) {
-        require(contractBalance != 0, "No funds to withdraw");
+    /* Private :
+     ***********/
+
+    function _payout() private returns (uint256) {
+        require(contractBalance != 0, "CoinFlip: No funds to withdraw");
 
         uint256 toTransfer = address(this).balance;
         contractBalance = 0;
-        to.transfer(toTransfer);
+        payable(owner()).transfer(toTransfer);
         return toTransfer;
     }
 }
