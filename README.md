@@ -10,10 +10,10 @@
 
 </div>
 
-## Updates
+### Updates
 
-2022/07 - Switch to Chainlink VRF v2 & Update solidity compiler version to 0.8.7;
-2022/12 - Switch to Goerli network v2 & upgrade all deps & Update solc to 0.8.16;
+- 2022/07 - Switch to Chainlink VRF v2 & Update solidity compiler version to 0.8.7;
+- 2022/12 - Switch to Goerli network v2 & upgrade all deps & Update solc to 0.8.16;
 
 ## Description
 
@@ -32,7 +32,9 @@ Try it yourself: [coinflip-double-up-your-eth.netlify.app/](https://coinflip-dou
 - [![truffle]][truffle-url]
 - [![ganache]][ganache-url]
 
-## Installation
+## Getting Started
+
+### Prerequisites
 
 Make sure you have the following ready:
 
@@ -42,30 +44,42 @@ Make sure you have the following ready:
 - [MetaMask](https://metamask.io/) installed in your browser
 - Cloned the repo via `git clone`
 
-## Development
+### Smart-Contracts Deployment
 
-### Contracts
+In your terminal, make sure you are in the `COINFLIP_2.0` repo, and type:
 
-In your terminal, go to the COINFLIP 2.0 repo and type:
-`yarn install`
+```sh
+yarn install
+```
 
 To deploy your smart-contracts:
 
-- Make sure to subscribe to Chainlink VRF v2 ( [Subscribtion to Chainlink VRF on Goerli](https://vrf.chain.link/goerli/new) ) ( [LINK Faucet](https://faucets.chain.link/) )
-- Then add your subscription id to the migration file: `blockchain/migrations/1_CoinFlip_migration.js`
-- Run `truffle migrate --network <<network name here>>` to deploy to the network of your choice. So for Goerli, type `truffle migrate --network goerli`
+- Subscribe to Chainlink VRF v2 ( [Subscribtion to Chainlink VRF on Goerli](https://vrf.chain.link/goerli/new) ) ( [LINK Faucet](https://faucets.chain.link/) )
+- Add your <b>subscription id</b> to the migration file: `blockchain/migrations/1_CoinFlip_migration.js`
+- Run the command below to deploy to the network of your choice.
+
+```sh
+truffle migrate --network <<network name here>>
+```
+
+So for Goerli, type:
+
+```sh
+truffle migrate --network goerli
+```
+
 - Replace the contract address in `src/constants.js`
 - Replace the abi file in `src/abis/coinFlip.js`
 - Make sure to fund the contract with some ETH ( [Faucet for the Goerli network](https://goerlifaucet.org/) )
 
-### Client & Config
+### Config & Client
 
-On each deploy, make sure to:
+Before each deploy, make sure to:
 
-- Change the `COINFLIP_ADDRESS` in `/src/constants.js` to your deployed contracts address
-- Copy the new abi file into the `/abis` folder
-- Enable/disable, and update the suitable networks in `truffle-config.js`
-- Get your mnemonic seed phrase add it to `blockchain/.secret`
+- Change the `COINFLIP_ADDRESS` in `/src/constants.js` to your deployed contracts address;
+- Copy the new abi file into the `src/abis` folder if you've made any changes to the contracts;
+- Enable/disable, and update the suitable networks in `truffle-config.js`;
+- In the `blockchain/` repo, create a file called `.secret` and paste your mnemonic seed phrase inside; (<b>Make sure you add this file in your `.gitignore`!!!</b>)
 
 <!-- ACKNOWLEDGMENTS -->
 
