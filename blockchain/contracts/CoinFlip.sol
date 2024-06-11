@@ -1,34 +1,27 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.16;
+pragma solidity 0.8.20;
 
-import "./Ownable.sol";
-import "./ReentrancyGuard.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
-import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+import "./Errors.sol";
 
-contract CoinFlip is Ownable, VRFConsumerBaseV2, ReentrancyGuard {
-    VRFCoordinatorV2Interface COORDINATOR;
-    LinkTokenInterface LINKTOKEN;
+import { VRFConsumerBaseV2Plus } from "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
+import { IVRFCoordinatorV2Plus } from "@chainlink/contracts/src/v0.8/vrf/dev/interfaces/IVRFCoordinatorV2Plus.sol";
+import { VRFV2PlusClient } from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
+import { ReentrancyGuard } from "solady/src/utils/ReentrancyGuard.sol";
 
+contract CoinFlip is VRFConsumerBaseV2Plus, ReentrancyGuard {
     /* Storage:
      ***********/
 
-    address constant vrfCoordinator = 0x2Ca8E0C643bDe4C2E08ab1fA0da3401AdAD7734D;
-    address constant link_token_contract = 0x326C977E6efc84E512bB9C30f76E30c160eD06FB;
+    // Chainlink VRF parameters
+    IVRFCoordinatorV2Plus internal immutable COORDINATOR;
+    bytes32 internal immutable KEY_HASH;
+    uint256 private immutable SUBSCRIPTION_ID;
+    uint16 private constant REQUEST_CONFIRMATIONS = 3;
+    uint32 private constant CALLBACK_GAS_LIMIT = 1e5;
+    uint32 private constant NUM_WORDS = 1;
 
-    bytes32 constant keyHash = 0x79d3d8832d904592c0bf9818b621522c988bb8b0c05cdc3b15aea1b6e8db0c15;
-    uint16 constant requestConfirmations = 3;
-    uint32 constant callbackGasLimit = 1e5;
-    uint32 constant numWords = 1;
-    uint64 subscriptionId;
+    uint256 public constant MIN_BET = 0.001 ether;
     uint256 private contractBalance;
-
-    struct Temp {
-        uint256 id;
-        uint256 result;
-        address playerAddress;
-    }
 
     struct PlayerByAddress {
         uint256 balance;
@@ -38,56 +31,68 @@ contract CoinFlip is Ownable, VRFConsumerBaseV2, ReentrancyGuard {
         bool betOngoing;
     }
 
-    mapping(address => PlayerByAddress) public playersByAddress; //to check who is the player
-    mapping(uint256 => Temp) public temps; //to check who is the sender of a pending bet by Id
+    struct Temp {
+        uint256 id;
+        uint256 result;
+        address playerAddress;
+    }
+
+    /// @notice Get player struct by address
+    mapping(address => PlayerByAddress) public playersByAddress;
+
+    /// @notice Get pending bet struct by requestId
+    mapping(uint256 => Temp) public temps;
 
     /* Events:
      *********/
 
-    event DepositToContract(address user, uint256 depositAmount, uint256 newBalance);
+    event DepositToContract(address indexed user, uint256 indexed depositAmount, uint256 newBalance);
     event Withdrawal(address player, uint256 amount);
     event NewIdRequest(address indexed player, uint256 requestId);
     event GeneratedRandomNumber(uint256 requestId, uint256 randomNumber);
     event BetResult(address indexed player, bool victory, uint256 amount);
+    event ContractBalanceWithdrawn(address indexed owner, uint256 amount);
 
     /* Constructor:
      **************/
 
-    constructor(uint64 _subscriptionId) payable initCosts(0.1 ether) VRFConsumerBaseV2(vrfCoordinator) {
-        COORDINATOR = VRFCoordinatorV2Interface(vrfCoordinator);
-        LINKTOKEN = LinkTokenInterface(link_token_contract);
-        subscriptionId = _subscriptionId;
+    constructor(
+        address _vrfCoordinator,
+        bytes32 _keyHash,
+        uint256 _subscriptionId
+    ) payable VRFConsumerBaseV2Plus(_vrfCoordinator) {
+        if (msg.value < 0.1 ether) revert CoinFlip__ContractNeedsETH();
+        COORDINATOR = IVRFCoordinatorV2Plus(_vrfCoordinator);
+        KEY_HASH = _keyHash;
+        SUBSCRIPTION_ID = _subscriptionId;
         contractBalance += msg.value;
     }
 
-    /* Modifiers:
-     ************/
+    /*//////////////////////////////////////////////////////////////
+                            WRITE FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
 
-    modifier initCosts(uint256 initCost) {
-        require(msg.value >= initCost, "CoinFlip: Contract needs ETH");
-        _;
-    }
+    /**
+     * @notice Allows a player to bet on heads or tails
+     * @param _betChoice 0 for heads, 1 for tails
+     */
+    function bet(uint256 _betChoice) public payable nonReentrant {
+        if (msg.value < MIN_BET) revert CoinFlip__InsuffisantAmount();
+        if (msg.value > getContractBalance() / 2) revert CoinFlip__AmountTooBig();
+        if (_betChoice != 0 && _betChoice != 1) revert CoinFlip__InvalidBetChoice();
 
-    modifier betConditions() {
-        require(msg.value >= 0.001 ether, "CoinFlip: amount insuffisant");
-        require(msg.value <= getContractBalance() / 2, "CoinFlip: amount too big");
-        require(!playersByAddress[_msgSender()].betOngoing, "CoinFlip: Bet already ongoing");
-        _;
-    }
+        address player = msg.sender;
+        PlayerByAddress memory _player = playersByAddress[player];
 
-    /* Functions:
-     *************/
+        if (_player.betOngoing) revert CoinFlip__BetAlreadyOngoing();
 
-    function bet(uint256 _betChoice) public payable betConditions nonReentrant {
-        require(_betChoice == 0 || _betChoice == 1, "CoinFlip: Must be 0 or 1");
+        _player.playerAddress = player;
+        _player.betChoice = _betChoice;
+        _player.betOngoing = true;
+        _player.betAmount = msg.value;
 
-        address player = _msgSender();
-
-        playersByAddress[player].playerAddress = player;
-        playersByAddress[player].betChoice = _betChoice;
-        playersByAddress[player].betOngoing = true;
-        playersByAddress[player].betAmount = msg.value;
-        contractBalance += playersByAddress[player].betAmount;
+        playersByAddress[player] = _player;
+        contractBalance += _player.betAmount;
 
         uint256 requestId = requestRandomWords();
         temps[requestId].playerAddress = player;
@@ -96,13 +101,64 @@ contract CoinFlip is Ownable, VRFConsumerBaseV2, ReentrancyGuard {
         emit NewIdRequest(player, requestId);
     }
 
-    /// @notice Assumes the subscription is funded sufficiently.
-    function requestRandomWords() public returns (uint256) {
-        return
-            COORDINATOR.requestRandomWords(keyHash, subscriptionId, requestConfirmations, callbackGasLimit, numWords);
+    /**
+     * @notice Allows players to withdraw their balance
+     */
+    function withdrawPlayerBalance() public nonReentrant {
+        address player = msg.sender;
+        if (playersByAddress[player].betOngoing) revert CoinFlip__BetOngoing();
+        if (playersByAddress[player].balance == 0) revert CoinFlip__NoFundsToWithdraw();
+
+        uint256 amount = playersByAddress[player].balance;
+        delete (playersByAddress[player]);
+
+        (bool success, ) = payable(player).call{ value: amount }("");
+        if (!success) revert CoinFlip__WithdrawFailed();
+
+        emit Withdrawal(player, amount);
     }
 
-    function fulfillRandomWords(uint256 _requestId, uint256[] memory _randomWords) internal override {
+    /**
+     * @notice Deposit ETH to the contract
+     */
+    function deposit() public payable {
+        if (msg.value == 0) revert CoinFlip__InsuffisantAmount();
+        contractBalance += msg.value;
+        emit DepositToContract(msg.sender, msg.value, contractBalance);
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                            VIEW FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
+
+    function getPlayerBalance() public view returns (uint256) {
+        return playersByAddress[msg.sender].balance;
+    }
+
+    function getContractBalance() public view returns (uint256) {
+        return contractBalance;
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                        PRIVATE FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
+
+    /// @notice Assumes the subscription is funded sufficiently.
+    function requestRandomWords() private returns (uint256) {
+        return
+            COORDINATOR.requestRandomWords(
+                VRFV2PlusClient.RandomWordsRequest({
+                    keyHash: KEY_HASH,
+                    subId: SUBSCRIPTION_ID,
+                    requestConfirmations: REQUEST_CONFIRMATIONS,
+                    callbackGasLimit: CALLBACK_GAS_LIMIT,
+                    numWords: NUM_WORDS,
+                    extraArgs: VRFV2PlusClient._argsToBytes(VRFV2PlusClient.ExtraArgsV1({ nativePayment: false }))
+                })
+            );
+    }
+
+    function fulfillRandomWords(uint256 _requestId, uint256[] calldata _randomWords) internal override {
         uint256 randomResult = _randomWords[0] % 2;
         temps[_requestId].result = randomResult;
 
@@ -110,93 +166,48 @@ contract CoinFlip is Ownable, VRFConsumerBaseV2, ReentrancyGuard {
         emit GeneratedRandomNumber(_requestId, randomResult);
     }
 
+    /**
+     * @notice Check if the player won the bet and update the player's balance accordingly
+     * @param _randomResult The random number generated by Chainlink VRF
+     * @param _requestId The requestId of the VRF call
+     * @return win True if the player won the bet, false otherwise
+     */
     function checkResult(uint256 _randomResult, uint256 _requestId) private returns (bool) {
         address player = temps[_requestId].playerAddress;
         bool win = false;
         uint256 amountWon = 0;
 
-        if (playersByAddress[player].betChoice == _randomResult) {
+        PlayerByAddress memory _player = playersByAddress[player];
+
+        if (_player.betChoice == _randomResult) {
             win = true;
-            amountWon = playersByAddress[player].betAmount * 2;
-            playersByAddress[player].balance = playersByAddress[player].balance + amountWon;
+            amountWon = _player.betAmount * 2;
+            _player.balance += amountWon;
             contractBalance -= amountWon;
         }
 
-        emit BetResult(player, win, amountWon);
+        _player.betAmount = 0;
+        _player.betOngoing = false;
+        playersByAddress[player] = _player;
 
-        playersByAddress[player].betAmount = 0;
-        playersByAddress[player].betOngoing = false;
+        emit BetResult(player, win, amountWon);
 
         delete (temps[_requestId]);
         return win;
     }
 
-    function deposit() external payable {
-        require(msg.value > 0);
-        contractBalance += msg.value;
-        emit DepositToContract(_msgSender(), msg.value, contractBalance);
-    }
+    /*//////////////////////////////////////////////////////////////
+                        RESTRCITED FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
 
-    function withdrawPlayerBalance() external nonReentrant {
-        address player = _msgSender();
-        require(player != address(0), "CoinFlip: This address doesn't exist");
-        require(playersByAddress[player].balance > 0, "CoinFlip: No fund to withdraw");
-        require(!playersByAddress[player].betOngoing, "CoinFlip: Bet ongoing");
-
-        uint256 amount = playersByAddress[player].balance;
-        payable(player).transfer(amount);
-        delete (playersByAddress[player]);
-
-        emit Withdrawal(player, amount);
-    }
-
-    /* View functions:
-     *******************/
-
-    function getPlayerBalance() external view returns (uint256) {
-        return playersByAddress[_msgSender()].balance;
-    }
-
-    function getContractBalance() public view returns (uint256) {
-        return contractBalance;
-    }
-
-    /* Restricted :
-     **************/
-
-    function withdrawContractBalance() external onlyOwner {
-        _payout();
-        if (LINKTOKEN.balanceOf(address(this)) > 0) {
-            bool isSuccess = LINKTOKEN.transfer(owner(), LINKTOKEN.balanceOf(address(this)));
-            require(isSuccess, "CoinFlip: Link withdraw failed");
-        }
-    }
-
-    function addConsumer(address consumerAddress) external onlyOwner {
-        COORDINATOR.addConsumer(subscriptionId, consumerAddress);
-    }
-
-    function removeConsumer(address consumerAddress) external onlyOwner {
-        // Remove a consumer contract from the subscription.
-        COORDINATOR.removeConsumer(subscriptionId, consumerAddress);
-    }
-
-    function cancelSubscription(address receivingWallet) external onlyOwner nonReentrant {
-        // Cancel the subscription and send the remaining LINK to a wallet address.
-        uint64 temp = subscriptionId;
-        subscriptionId = 0;
-        COORDINATOR.cancelSubscription(temp, receivingWallet);
-    }
-
-    /* Private :
-     ***********/
-
-    function _payout() private returns (uint256) {
-        require(contractBalance != 0, "CoinFlip: No funds to withdraw");
+    function withdrawContractBalance() public onlyOwner {
+        if (contractBalance == 0) revert CoinFlip__NoFundsToWithdraw();
 
         uint256 toTransfer = address(this).balance;
         contractBalance = 0;
-        payable(owner()).transfer(toTransfer);
-        return toTransfer;
+        (bool success, ) = payable(owner()).call{ value: toTransfer }("");
+        if (!success) revert CoinFlip__WithdrawFailed();
+
+        emit ContractBalanceWithdrawn(owner(), toTransfer);
     }
 }
