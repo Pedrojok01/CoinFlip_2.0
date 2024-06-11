@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useMemo } from "react";
 import { useCoinFlipContract } from "./useContract";
 import { calculateGasMargin } from "../utils/calculateGasMargin";
 import { formatResult } from "../utils/formatResult";
@@ -8,19 +8,20 @@ export const useReadFunction = (player, type) => {
   const [value, setValue] = useState();
 
   const doCall = useCallback(async () => {
-    if (!contract) {
-      return;
+    if (!contract) return;
+
+    try {
+      const estimatedGas = await contract.estimateGas[player]();
+      const result = await contract[player]({ gasLimit: calculateGasMargin(estimatedGas) });
+      setValue(formatResult(result, type));
+    } catch (error) {
+      console.error("Error calling contract function:", error);
     }
-    const estimatedGas = await contract.estimateGas[player]();
-    const result = await contract[player]({ gasLimit: calculateGasMargin(estimatedGas) });
-    setValue(formatResult(result, type));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contract, player]);
+  }, [contract, player, type]);
 
   useEffect(() => {
     if (contract) doCall();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contract]);
+  }, [contract, doCall]);
 
-  return { call: doCall, value };
+  return useMemo(() => ({ call: doCall, value }), [doCall, value]);
 };

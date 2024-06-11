@@ -1,34 +1,31 @@
-import React from "react";
+// index.js
+import React, { useMemo } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App";
 import { darkTheme, lightTheme } from "./theme";
 import { ThemeProvider } from "@emotion/react";
 import { useAppContext, AppContextProvider } from "./AppContext";
 import { Web3ReactProvider } from "@web3-react/core";
-import { Web3Provider } from "@ethersproject/providers";
+import { metaMask, metaMaskHooks } from "./data/connectors";
 
-const POLLIN_INTERVAL = 4000;
-const getLibrary = (provider) => {
-  const library = new Web3Provider(provider);
-  library.pollingInterval = POLLIN_INTERVAL;
-  return library;
-};
+const root = createRoot(document.getElementById("root"));
 
-const InnerApp = () => {
+const RootApp = () => {
   const { theme } = useAppContext();
+  const themeMemo = useMemo(() => (theme === "light" ? lightTheme : darkTheme), [theme]);
+
   return (
-    <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
+    <ThemeProvider theme={themeMemo}>
       <App />
     </ThemeProvider>
   );
 };
 
-const root = createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <Web3ReactProvider getLibrary={getLibrary}>
+    <Web3ReactProvider connectors={[[metaMask, metaMaskHooks]]}>
       <AppContextProvider>
-        <InnerApp />
+        <RootApp />
       </AppContextProvider>
     </Web3ReactProvider>
   </React.StrictMode>

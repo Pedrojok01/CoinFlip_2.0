@@ -1,4 +1,6 @@
-import { BigNumber } from "@ethersproject/bignumber";
-
-export const calculateGasMargin = (value) =>
-  value.mul(BigNumber.from(10000).add(BigNumber.from(1000))).div(BigNumber.from(10000));
+export const calculateGasMargin = (value) => {
+  const bigIntValue = BigInt(value);
+  const margin = 1000n;
+  const base = 10000n;
+  return (bigIntValue * (base + margin)) / base;
+};

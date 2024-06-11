@@ -16,3 +16,18 @@ build
 .env.development.local
 .env.test.local
 .env.production.local
+
+# blockchain files
+coverage
+blockchain/report.md
+
+blockchain/.env
+blockchain/.env.local
+blockchain/node_modules
+
+blockchain/coverage
+blockchain/coverage.json
+blockchain/typechain
+blockchain/typechain-types
+blockchain/cache
+blockchain/artifacts

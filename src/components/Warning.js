@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 
-import { SUPPORTED_CHAINS } from "../constants";
+import { SUPPORTED_CHAINS } from "../data/constants";
 import { useWallet, isValidChainId, chains } from "../hooks/useWallet";
 
 const StyledWarning = styled.div`

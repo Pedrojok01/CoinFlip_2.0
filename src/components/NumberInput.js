@@ -45,13 +45,14 @@ export const NumberInput = ({ value, onChange, margin }) => {
     } else {
       setInternalValue(value);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onChange, internalValue]);
+  }, [value, onChange, internalValue]);
 
-  const handleInternalChange = useCallback((event) => {
-    setInternalValue(event.currentTarget.value);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const handleInternalChange = useCallback(
+    (event) => {
+      setInternalValue(event.currentTarget.value);
+    },
+    [setInternalValue]
+  );
 
   return (
     <Wrapper margin={margin}>

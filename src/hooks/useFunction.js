@@ -30,15 +30,14 @@ export const useFunction = (player, rawValue, args = []) => {
       addTransaction({ hash, from, value, wait });
     } catch (error) {
       addNotification({
-        title: error.reason ? error.reason : error.message || "Oops something went wrong",
+        title: error.reason ?? error.message ?? "Oops something went wrong",
         isError: true,
         wrapText: true,
         icon: faExclamationTriangle,
         hideIn: 2500,
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [player, rawValue, contract, addTransaction, addNotification]);
+  }, [player, rawValue, args, contract, addTransaction, addNotification]);
 
   return doCall;
 };

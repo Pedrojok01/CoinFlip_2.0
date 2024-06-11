@@ -29,7 +29,9 @@ const StyledCoin = styled.button`
   margin-right: ${({ marginRight, theme }) => (marginRight ? `${theme.space.l}px` : undefined)};
   cursor: pointer;
   outline: 0;
-  translate: transform 150ms ease-in-out, background-color 150ms ease-in-out;
+  translate:
+    transform 150ms ease-in-out,
+    background-color 150ms ease-in-out;
   &:hover {
     transform: scale(1.1);
     background-color: ${({ theme }) => Color(theme.colors.complementary).darken(0.2).toString()};
@@ -46,8 +48,8 @@ export const Game = () => {
   const { isActive, account } = useWallet();
   const { balance, profit, getContractBalance, syncAll, addNotification } = useAppContext();
   const contract = useCoinFlipContract();
-  const [betAmount, setBet] = useState(0.01);
-  const [betChoice, setBetChoice] = useState(0);
+  const [betAmount, setBetAmount] = useState(0.01);
+  const [betChoice, setBetChoice] = useState(null);
 
   useEventCallback(
     "BetResult",
@@ -70,8 +72,8 @@ export const Game = () => {
   const doFlip = useFunction("bet", betAmount, [betChoice]);
   const collectFunds = useFunction("withdrawPlayerBalance");
 
-  const handleBet = (bet) => {
-    setBetChoice(bet);
+  const handleBet = (betChoice) => {
+    setBetChoice(betChoice);
     doFlip();
   };
 
@@ -102,7 +104,7 @@ export const Game = () => {
         Your profit: <Eth>{profit}</Eth> {profit && profit !== "0.0" && <Button onClick={collectFunds}>Collect</Button>}
       </p>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <NumberInput onChange={setBet} value={betAmount} />
+        <NumberInput onChange={setBetAmount} value={betAmount} />
         <p
           style={{
             marginTop: 2,
@@ -115,10 +117,10 @@ export const Game = () => {
         </p>
         <StyledCoinWrapper>
           <div onClick={() => handleBet(0)}>
-            <HeadsCoin betChoice={0} onClick={doFlip} />
+            <HeadsCoin />
           </div>
           <div onClick={() => handleBet(1)}>
-            <TailsCoin betChoice={1} onClick={doFlip} />
+            <TailsCoin />
           </div>
         </StyledCoinWrapper>
       </div>

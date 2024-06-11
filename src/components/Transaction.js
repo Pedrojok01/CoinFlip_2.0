@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExternalLinkAlt, faCheck, faTimes, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { useEtherScanLink } from "../hooks/useEtherScanLink";
-import { WAITFOR_CONFIRMATIONS } from "../constants";
+import { WAITFOR_CONFIRMATIONS } from "../data/constants";
 import { Message } from "./Message";
 import { useAppContext } from "../AppContext";
 
@@ -41,8 +41,7 @@ export const Transaction = ({ hash, wait }) => {
         }
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wait]);
+  }, [wait, setIsConfirmed, setIsHiding, setIsHidden, setHasError, syncAll]);
 
   return (
     <Message error={hasError} success={isConfirmed} isHiding={isHiding} isHidden={isHidden}>

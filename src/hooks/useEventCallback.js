@@ -16,6 +16,5 @@ export const useEventCallback = (name, callback, deps) => {
         contract.off(name, memoizedCallback);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [name, contract, memoizedCallback]);
 };

@@ -16,7 +16,9 @@ const StyledMessage = styled.div`
     error ? theme.colors.error : success ? theme.colors.success : theme.cardBackground};
   padding: ${({ theme, large }) => (large ? `${theme.space.m}px` : `${theme.space.s}px ${theme.space.m}px`)};
   margin-top: ${({ theme }) => `${theme.space.m}px`};
-  transition: opacity 500ms ease-in-out, background-color 200ms ease-in-out;
+  transition:
+    opacity 500ms ease-in-out,
+    background-color 200ms ease-in-out;
   opacity: ${({ isHiding }) => (isHiding ? 0 : 1)};
   display: ${({ isHidden }) => (isHidden ? "none" : undefined)};
 `;

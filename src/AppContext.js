@@ -1,4 +1,5 @@
-import React, { useContext, useState, useCallback, useEffect } from "react";
+import React, { useContext, useState, useCallback, useEffect, useMemo } from "react";
+import PropTypes from "prop-types";
 import { useReadFunction } from "./hooks/useReadFunction";
 import { useWallet } from "./hooks/useWallet";
 import { formatResult } from "./utils/formatResult";
@@ -8,35 +9,39 @@ const AppContext = React.createContext({});
 const DEFAULT_THEME = "dark";
 
 const useBalance = () => {
-  const { library, account } = useWallet();
-  const [balance, setBalance] = useState(library ? library.getBalance(account) : undefined);
+  const { provider, account } = useWallet();
+  const [balance, setBalance] = useState();
 
   const getBalance = useCallback(async () => {
-    if (!library || !account) {
+    if (!provider || !account) {
       setBalance(undefined);
       return;
     }
 
-    const result = await library.getBalance(account);
+    const result = await provider.getBalance(account);
     setBalance(formatResult(result, "eth"));
-  }, [library, account]);
+  }, [provider, account]);
 
   useEffect(() => {
     getBalance();
-  }, [library, account, getBalance]);
+  }, [provider, account, getBalance]);
 
-  return {
-    balance,
-    getBalance,
-  };
+  return useMemo(
+    () => ({
+      balance,
+      getBalance,
+    }),
+    [balance, getBalance]
+  );
 };
 
 export const useAppContext = () => useContext(AppContext);
+
 export const AppContextProvider = ({ children }) => {
   const [theme, setTheme] = useState(DEFAULT_THEME);
-  const toggleTheme = () => setTheme(theme === "light" ? "dark" : "light");
+  const toggleTheme = useCallback(() => setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light")), []);
   const [transactions, setTransactions] = useState([]);
-  const [notifications, setNotification] = useState([]);
+  const [notifications, setNotifications] = useState([]);
 
   const { value: contractBalance, call: getContractBalance } = useReadFunction("getContractBalance", "eth");
   const { value: profit, call: getProfit } = useReadFunction("getPlayerBalance", "eth");
@@ -48,58 +53,68 @@ export const AppContextProvider = ({ children }) => {
     getBalance();
   }, [getContractBalance, getProfit, getBalance]);
 
-  const addTransaction = useCallback(
-    (transaction) => {
-      const onCreatedTimeStamp = new Date();
-      setTransactions([
-        ...transactions,
-        {
-          ...transaction,
-          onCreatedTimeStamp,
-          type: "transaction",
-          id: transaction.hash,
-        },
-      ]);
-    },
-    [transactions]
+  const addTransaction = useCallback((transaction) => {
+    setTransactions((prevTransactions) => [
+      ...prevTransactions,
+      {
+        ...transaction,
+        onCreatedTimeStamp: new Date(),
+        type: "transaction",
+        id: transaction.hash,
+      },
+    ]);
+  }, []);
+
+  const addNotification = useCallback((notification) => {
+    const onCreatedTimeStamp = new Date();
+
+    setNotifications((prevNotifications) => [
+      ...prevNotifications,
+      {
+        ...notification,
+        onCreatedTimeStamp,
+        type: "notification",
+        id: uuidv4(),
+      },
+    ]);
+  }, []);
+
+  const providerValue = useMemo(
+    () => ({
+      theme,
+      toggleTheme,
+      transactions,
+      addTransaction,
+      notifications,
+      addNotification,
+      balance,
+      getBalance,
+      profit,
+      getProfit,
+      contractBalance,
+      getContractBalance,
+      syncAll,
+    }),
+    [
+      theme,
+      transactions,
+      notifications,
+      balance,
+      profit,
+      contractBalance,
+      toggleTheme,
+      addTransaction,
+      addNotification,
+      getBalance,
+      getProfit,
+      getContractBalance,
+      syncAll,
+    ]
   );
 
-  const addNotification = useCallback(
-    (notification) => {
-      const onCreatedTimeStamp = new Date();
+  return <AppContext.Provider value={providerValue}>{children}</AppContext.Provider>;
+};
 
-      setNotification([
-        ...notifications,
-        {
-          ...notification,
-          onCreatedTimeStamp,
-          type: "notification",
-          id: uuidv4(),
-        },
-      ]);
-    },
-    [notifications]
-  );
-
-  return (
-    <AppContext.Provider
-      value={{
-        theme,
-        toggleTheme,
-        transactions,
-        addTransaction,
-        notifications,
-        addNotification,
-        balance,
-        getBalance,
-        profit,
-        getProfit,
-        contractBalance,
-        getContractBalance,
-        syncAll,
-      }}
-    >
-      {children}
-    </AppContext.Provider>
-  );
+AppContextProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };

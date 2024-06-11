@@ -10,7 +10,6 @@ import { Admin } from "./components/Admin";
 import { Notifications } from "./components/Notifications";
 import { Warning } from "./components/Warning";
 import { Game } from "./components/Game";
-import { useEagerConnect } from "./hooks/useWallet";
 
 const Wrapper = styled.div`
   background-color: ${({ theme }) => theme.background};
@@ -29,8 +28,6 @@ const Wrapper = styled.div`
 `;
 
 export const App = () => {
-  useEagerConnect();
-
   return (
     <Wrapper>
       <Notifications />

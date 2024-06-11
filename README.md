@@ -5,10 +5,24 @@
 [![Stargazers](https://img.shields.io/github/stars/Pedrojok01/CoinFlip_2.0)](https://github.com/Pedrojok01/CoinFlip_2.0/stargazers)
 [![Issues](https://img.shields.io/github/issues/Pedrojok01/CoinFlip_2.0)](https://github.com/Pedrojok01/CoinFlip_2.0/issues)
 [![MIT License](https://img.shields.io/github/license/Pedrojok01/CoinFlip_2.0)](https://github.com/Pedrojok01/CoinFlip_2.0/blob/main/License)
-[![LinkedIn](https://img.shields.io/badge/-LinkedIn-black)](https://www.linkedin.com/in/pierre-e/)
+[![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue)](https://www.linkedin.com/in/pierre-e/)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/7f7b73fb-c34d-4063-826b-dceae8a580a2/deploy-status)](https://app.netlify.com/sites/coinflip-double-up-your-eth/deploys)
 
 </div>
+
+## Table of Contents
+
+- [Table of Contents](#table-of-contents)
+  - [Updates](#updates)
+- [Description](#description)
+- [Built With](#built-with)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Smart-Contracts Deployment](#smart-contracts-deployment)
+  - [Config \& Client](#config--client)
+- [Acknowledgments](#acknowledgments)
+- [Use](#use)
+  - [⭐️ ... and don't forget to leave a star if you like it! ⭐️](#️--and-dont-forget-to-leave-a-star-if-you-like-it-️)
 
 ### Updates
 
@@ -19,6 +33,8 @@
 
 Decentralized application (Dapp), EVM compatible, built as a part of the programming course: Ethereum201 on [academy.moralis.com](https://academy.moralis.io).
 
+Smart contracts deployed on Sepolia testnet: [0x097d039Bb7353B0bcD3d585B5a71e8B575F2f3f7](https://sepolia.etherscan.io/address/0x097d039Bb7353B0bcD3d585B5a71e8B575F2f3f7#code)
+
 Try it yourself: [coinflip-double-up-your-eth.netlify.app/](https://coinflip-double-up-your-eth.netlify.app/)
 
 ![Preview](./preview.gif)
@@ -26,11 +42,10 @@ Try it yourself: [coinflip-double-up-your-eth.netlify.app/](https://coinflip-dou
 ## Built With
 
 - [![React][react.js]][react-url]
-- [![web3.js]][web3.js-url]
 - [![solidity]][solidity-url]
 - [![chainlink]][chainlink-url]
-- [![truffle]][truffle-url]
-- [![ganache]][ganache-url]
+- [![hardhat]][hardhat-url]
+- [![ethers.js]][ethers-url]
 
 ## Getting Started
 
@@ -38,11 +53,16 @@ Try it yourself: [coinflip-double-up-your-eth.netlify.app/](https://coinflip-dou
 
 Make sure you have the following ready:
 
-- `yarn` installed
-- [Truffle](https://www.trufflesuite.com/docs) installed globally via `npm install -g truffle` (developped on v5.4.17).
-- Run a local blockchain via [Ganache](https://www.trufflesuite.com/docs/ganache/overview), or [Ganache-cli](https://github.com/trufflesuite/ganache-cli), or register on [Infura.io](https://infura.io/) to deploy on an Ethereum network.
+- [node.js](https://nodejs.org/) installed (developed on LTS v20.12.0)
+- [yarn](https://yarnpkg.com/) installed
+- [hardhat](https://hardhat.org/) installed
 - [MetaMask](https://metamask.io/) installed in your browser
-- Cloned the repo via `git clone`
+
+Then create a new repo, open your favorite code editor, and clone the repo with the following cmd:
+
+```
+git clone https://github.com/Pedrojok01/Web3-Gaming-Platform.git .
+```
 
 ### Smart-Contracts Deployment
 
@@ -54,7 +74,7 @@ yarn install
 
 To deploy your smart-contracts:
 
-- Subscribe to Chainlink VRF v2 ( [Subscribtion to Chainlink VRF on Goerli](https://vrf.chain.link/goerli/new) ) ( [LINK Faucet](https://faucets.chain.link/) )
+- Subscribe to Chainlink VRF v2 ( [Subscription to Chainlink VRF on Goerli](https://vrf.chain.link/goerli/new) ) ( [LINK Faucet](https://faucets.chain.link/) )
 - Add your <b>subscription id</b> to the migration file: `blockchain/migrations/1_CoinFlip_migration.js`
 - Run the command below to deploy to the network of your choice.
 
@@ -74,7 +94,7 @@ truffle migrate --network goerli
 
 ### Config & Client
 
-Before each deploy, make sure to:
+Before each deployment, make sure to:
 
 - Change the `COINFLIP_ADDRESS` in `/src/constants.js` to your deployed contracts address;
 - Copy the new abi file into the `src/abis` folder if you've made any changes to the contracts;
@@ -113,9 +133,7 @@ You are now set to start your local server. Make sure you're still in `COINFLIP 
 [chainlink-url]: https://chain.link/
 [solidity]: https://img.shields.io/badge/Solidity-35495E?style=for-the-badge&logo=solidity&logoColor=4FC08D
 [solidity-url]: https://soliditylang.org/
-[truffle]: https://img.shields.io/badge/TRUFFLE-DD0031?style=for-the-badge&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABS2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDIgNzkuMTYwOTI0LCAyMDE3LzA3LzEzLTAxOjA2OjM5ICAgICAgICAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIi8+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+nhxg7wAAA1lJREFUOI1Vk31M1AUYxz/3Iq9CwcXBTOUIDJocguFLCcEqJWCJ5ezoBd0K1+yPdJEDt9Jp/VHGpilzgEIOojOjUi9iFTtA8AAl7BY4cqwQFAM6uEyOg9+Pe/pHGX62Z3ueP77fZ/vueTQiAoBnykNJ4S56rzrjFuv1helpac/6bUiJDjItRTzeG/329ubOU19WHThWej3rdQvziMh85Wds2p8dnyydjU3SJSIXRaSi5Repd16RttFbUu1olQv1330k6ty8Zr6pKSuvM4dGSt9PzTIkImenJ+Xsoc9k3+Z8edG0UnamZ4nVZhPbQJ90tjuaHjDocXQdTAgIkyLLdlHuba6vrJY92wqkv7dP0qLj5bknUiSZYLE12+Vce6u0XXI0iAhaINpaWbXf5/ORuCoJFfACURERtLW0Ynosho/LjxEaGoIpdTUpcY/zZMQSjtfW5LhhCyNDw0e2rHtGMmNXSmnJhyIicnR2VKZFZG9evmQnrRVVUWQhR/YUS+bGLLks0qkfGRrOnp7yYDAa6bnyKyg+VmgDqZl1cficlXfyLKSZEti64w2WxZjobu+gqcbKu2dO4cK3SqsoyjJECA5ZzM0/B/m26gtydCFc+/dvKtRxTpz/mpNlx5kcHMZ2uo67t0dptJ0nclsuN1SXTtP/e+9MUUGhX5jBgKoqjI2N8XlVOYlPrWP3RD9zwGvhCawB9IAC/IyPhv8GOegfNaCZ8Xpv7tr66qNjt0cxRkXiGh9nZmaGDw4dYENeLnaEC+4BVFXBb5Efqm8OrVbL0YdWcLGy5kdEpK7+dK2kRkbLjhfy5M2cl+Tl9RmSGZconxbtE7fz2nx43gVBdnz/g2w0r3lfIyLJwNWi7YV0NLeSYE5EAFVRGBkaJjA4iKTVKSSZzUSEh3Nn6i49vznparvEw2Fhj2ju/UI58PZ7BW/hsLcQGx+PX4A/iKDMKrgnJpj2ePD5fGg0GgKDgjAYI4p1Ot1hjYjgGv+Hv/64fiY17WmLtbKa2rIKVFVhSfRyuH+yD/IN8AqARkS4M+nGkrGJlPVrPyks2l3sdk1gb2iku70D/SI9Op1uobgU2Ht/0AMEBAayPDYGe0NjifNy91fPb87daTAa0/39/ZeqcyrALaANOAk4F7r9DzIq4ym9+fzCAAAAAElFTkSuQmCC
-[truffle-url]: https://trufflesuite.com/
-[web3.js]: https://img.shields.io/badge/web3.js-4A4A55?style=for-the-badge&logo=web3.js&logoColor=FF3E00
-[web3.js-url]: https://web3js.readthedocs.io/en/latest/
-[ganache]: https://img.shields.io/badge/GANACHE-yellow?style=for-the-badge&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABS2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDIgNzkuMTYwOTI0LCAyMDE3LzA3LzEzLTAxOjA2OjM5ICAgICAgICAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIi8+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+nhxg7wAAAqVJREFUOI1t08trXVUUx/Hv2ufse8+57+Q+ElPSUCWtpdqBIFQ6ysSRgkJxpDix+gc4ETrsSOysIx/gg9aBUiwiOLCIoChGoRPB0kRtoA9jYnJz3+fcs/fqIPH2ov5Ge7D2h/1YSwBWL75M6hQbCMnY0x9kzLWqzx5aOvwWaNTZ3DiXDEeXHQGhAa+KCDx29gMMgADOK8lYiaw58fBC9Nli036u7d+Pub/XlyoFc6lUCL7OhZxyXvHKJAYgdYoRKTerwYXDLftLvRI+lwy6jDOPRxgnKXkbrFSL5odSbN42IvPuQDEAxcicOdKUtUZZXvcKw9SDBIjI/vlEcF5RFQo5ebVW8GtxzrwyAeZmo0+janMucSHZqI+oHlzsn+yvXTog85ArN0rlUvzuBKjFbpQmCUG5Rb65DCh+1DnYK/iki2YJ+foRbO0QLnP4cTKYAKs3k1Ej34PePQKjlBdPEi08jk/6uMEu+dYx4sUnILBke/fIetsgpBPg/Mdb+uX1lPmFHLa7Du116vUKheUVSo8+jcR1dG+DyvAm1mSE+YiZUgBACFApGD661uav3YytjufO1h+8cOo2T50+SXsQILs3ULH89KflkXlDtWh4/6v2A6BaNCRj5ZNvO4SB0Bt6dvrK0aVbzM8YaM1w8eoOH17b5cWVGk8ejbjyXecB4DxRGAgPzYYA1CsG75Uf1z23txN2uj2u/zZiYdZyazMlb4VaKbATAIin/gwjgrXwxWqXO9sZqkqjGuKckreCVyUwUpw8IvA8cHcayRzs9T2NSkCrFmIEbChstjN+XhsO4py8Ng1cBZaBNyetIxDnBJnqp/2Z4b10rMsivDMNAAyAN4DjwBX+m28UThvhbBjIXT0YKPM/hTeAM8AzwK/ABvASsAJ8/+/i+whWCI78GsrmAAAAAElFTkSuQmCC
-[ganache-url]: https://trufflesuite.com/ganache/
+[hardhat]: https://img.shields.io/badge/Hardhat-ffc517?style=for-the-badge&logo=data:image/png;base64,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
+[hardhat-url]: https://hardhat.org/
+[ethers.js]: https://img.shields.io/badge/Ethers.js-2535a0?style=for-the-badge&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADcAAAAwCAYAAAC13uL+AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAALVSURBVGhD7ZjPSxdBGIf7Z7p1ky51CS928qQnu5SH9BIeAiFJEAwPVgfx5EkIBCEIgkAIBEEQBOlP2ny+MDDfl8/uvjM7U23s4SHNd2fez7y/ZvfBw8enzf/KJG6sTOLGyiSuBE+enzfPlr/OUH+vQVVxC4tnzebby+bw+K45Ovk1x9a7q+pCq4lbe30hRVkQ+ejpF7nGUKqII1pKSBvvD26qCCwubv3NTymgj+29a7neEIqKo4as0x8+3zbLa99n9Rfslla/zcRY29WXP+bWG0pRcfufbuecJT2VXQAxsT01WjI9i4kjOrGjWztX0s5in3uxcSHtcsgWRwq+uq8vmkHsHHxMjAAHYdcAIkn6rtxHOE5rL8niGMaqXmL60tHCmmodC+NFPd9GkjgagWd2kWrq+S52RQYoUg7OLY7T7RLGpjQI0jWnKcTXMw6R9UhvtZe3q7rE4azthAHmWo0BDNSZiqi3q7rE0cHsBpCTfqkggllp9/ZEzyVORa30wO3Cjgvw3Gh6xZEadmFOUtnWguhZH0DZxvSKU1eqPxm1gKo9ZRfTK07VG4KVrZec59VsVXYxf0VcTiOqIk6lJXNI2XphzdTrlG1qnrrPEjf0couwlLpVTY35qmxjesWpTuW98XdBmnmHP7cV64Mn8r3iQN3avY61Qd157olqxnkzxyVObZDTFCxEjw9EKgpLK/ptvfjFWV2BSrw183wQwL+g3g8DnjqLcYkD9c6VcopdkAXq/higLHLGj1scqPRE4NAIBjhAxgw1RTdFUO7aPJckDtjcvmcxg4bOvlRwHvHUJofO/vzOAYUDSRYHNADVnqkXvnewgXouheA88HkBqEnqjr09kc0SF0Akm7V9IsAZumFwrg1sQkOhUZEZ/IwIUpSoeOaaZZC4GDbnJHEGwcHZAAdg/w877CFESa2dSzFx/yKTuLEyiRsrk7ixMokbK5O4cXLa/Ab0j7hz1hk9uQAAAABJRU5ErkJggg==
+[ethers-url]: https://docs.ethers.io/v6/

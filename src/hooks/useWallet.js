@@ -1,78 +1,96 @@
-import { useState, useEffect, useCallback } from "react";
-import { InjectedConnector } from "@web3-react/injected-connector";
-import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";
-import { SUPPORTED_CHAINS } from "../constants";
+import { useCallback, useEffect, useMemo } from "react";
+import { SUPPORTED_CHAINS } from "../data/constants";
+import { useWeb3React } from "@web3-react/core";
 
 export const chains = {
   1: {
     name: "MainNet",
     etherScanPrefix: "",
   },
-  5: {
-    name: "Goerli",
-    etherScanPrefix: "goerli.",
+  11155111: {
+    name: "Sepolia",
+    etherScanPrefix: "sepolia.",
   },
 };
 
-export const injected = new InjectedConnector({
-  // See https://chainid.network/
-  supportedChainIds: SUPPORTED_CHAINS,
-});
-
 export const isValidChainId = (chainId) => (chainId ? SUPPORTED_CHAINS.includes(chainId) : undefined);
 
-export function useEagerConnect() {
-  const [tried, setTried] = useState(false);
-  const { activate } = useWallet();
-
-  useEffect(() => {
-    const setTriedFalse = () => setTried(false);
-    if (!window.ethereum) {
-      return;
-    }
-
-    window.ethereum.on("chainChanged", setTriedFalse);
-    window.ethereum.on("accountChanged", setTriedFalse);
-
-    return () => {
-      window.ethereum.removeListener("chainChanged", setTriedFalse);
-      window.ethereum.removeListener("accountChanged", setTriedFalse);
-    };
-  }, [setTried]);
-
-  useEffect(() => {
-    if (!activate || tried) {
-      return;
-    }
-
-    setTried(true);
-
-    injected.isAuthorized().then((isAuthorized) => {
-      if (isAuthorized) {
-        activate();
-      }
+const addSepoliaNetwork = async () => {
+  try {
+    await window.ethereum.request({
+      method: "wallet_addEthereumChain",
+      params: [
+        {
+          chainId: "0xaa36a7", // Hexadecimal of 11155111
+          chainName: "Sepolia",
+          nativeCurrency: {
+            name: "ETH",
+            symbol: "ETH",
+            decimals: 18,
+          },
+          rpcUrls: ["https://1rpc.io/sepolia"],
+          blockExplorerUrls: ["https://sepolia.etherscan.io"],
+        },
+      ],
     });
-  }, [activate, tried]);
-}
+  } catch (addError) {
+    console.error("Failed to add Sepolia network to MetaMask", addError);
+  }
+};
 
 export const useWallet = () => {
-  const web3React = useWeb3React();
+  const { isActive, account, chainId, provider, connector } = useWeb3React();
+  const isValidChain = useMemo(() => isValidChainId(chainId), [chainId]);
 
-  const activate = useCallback(() => {
-    web3React.activate(injected, (error) => {
-      if (error instanceof UnsupportedChainIdError) {
-        web3React.activate(web3React.connector); // Can't use setError because the connector isn't set
+  console.log("chainId", chainId);
+
+  useEffect(() => {
+    if (chainId && !isValidChain) {
+      const switchChain = async () => {
+        try {
+          await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: `0x${SUPPORTED_CHAINS[0].toString(16)}` }],
+          });
+        } catch (error) {
+          if (error.code === 4902) {
+            await addSepoliaNetwork();
+          }
+          console.error("Invalid chainId", chainId);
+        }
+      };
+      switchChain();
+    }
+  }, [chainId, isValidChain]);
+
+  const handleActivate = useCallback(async () => {
+    try {
+      await connector.activate();
+    } catch (error) {
+      console.error("Failed to activate MetaMask", error);
+      if (error.code === 4902) {
+        await addSepoliaNetwork();
+        await connector.activate(); // Retry activation after adding the network
+      } else {
+        console.error("Failed to activate MetaMask", error);
       }
-    });
-  }, [web3React]);
+    }
+  }, [connector]);
 
-  return {
-    activate,
-    isActive: web3React.active,
-    deactivate: web3React.deactivate,
-    chainId: web3React.chainId,
-    account: web3React.account,
-    isMetaMask: window.ethereum?.isMetaMask,
-    library: web3React.library,
-  };
+  const handleDeactivate = useCallback(() => {
+    connector.deactivate();
+  }, [connector]);
+
+  return useMemo(
+    () => ({
+      activate: handleActivate,
+      isActive,
+      deactivate: handleDeactivate,
+      chainId,
+      account,
+      isMetaMask: !!window.ethereum?.isMetaMask,
+      provider,
+    }),
+    [handleActivate, isActive, handleDeactivate, chainId, account, provider]
+  );
 };

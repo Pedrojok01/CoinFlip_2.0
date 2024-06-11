@@ -1,23 +1,22 @@
 import { useMemo } from "react";
 import { Contract } from "@ethersproject/contracts";
-import { abi } from "../abis/coinFlip";
 import { useWallet } from "./useWallet";
-import { COINFLIP_ADDRESS } from "../constants";
+import { COINFLIP } from "../data/constants";
 
 export const useContract = (address, abi) => {
-  const { library, account } = useWallet();
+  const { provider, account } = useWallet();
 
   return useMemo(() => {
-    if (!address || !abi || !library) return null;
+    if (!address || !abi || !provider) return null;
     try {
-      const signer = library.getSigner(account);
+      const signer = provider.getSigner(account);
 
       return new Contract(address, abi, signer);
     } catch (error) {
       console.error("Failed to get contract", error);
       return null;
     }
-  }, [address, abi, library, account]);
+  }, [address, abi, provider, account]);
 };
 
-export const useCoinFlipContract = () => useContract(COINFLIP_ADDRESS, abi);
+export const useCoinFlipContract = () => useContract(COINFLIP.address, COINFLIP.abi);

@@ -2,7 +2,7 @@ import React from "react";
 
 const toSignificant = (value, signif) => {
   const [base, decimals] = value.split(".");
-  return [base, (decimals && decimals.substring(0, signif - base.length)) || "0"].join(".");
+  return [base, (decimals && decimals.substring(0, signif - base.length)) ?? "0"].join(".");
 };
 
 export const Eth = ({ children, signif = 6 }) => {

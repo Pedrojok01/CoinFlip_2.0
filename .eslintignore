@@ -1,7 +1,9 @@
+.netlify/
+
 node_modules/
 build/
+
+blockchain/
+
 yarn.lock
 package-lock.json
-Truffle/
-cloud/
-src/constant/constant.js
