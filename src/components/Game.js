@@ -1,18 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import Color from "color";
 import { formatEther } from "@ethersproject/units";
 import { faTrophy, faSadTear } from "@fortawesome/free-solid-svg-icons";
 
 import { Button } from "./Button";
-import { ConnectButton } from "./ConnectButton";
 import { Eth } from "./Eth";
 import { NumberInput } from "./NumberInput";
-import { useWallet } from "../hooks/useWallet";
+import { useFunction, useEventCallback, useWallet } from "../hooks";
 import { useAppContext } from "../AppContext";
-import { useCoinFlipContract } from "../hooks/useContract";
-import { useFunction } from "../hooks/useFunction";
-import { useEventCallback } from "../hooks/useEventCallback";
 import { ReactComponent as EthereumLogo } from "../ethereumLogo.svg";
 
 const StyledCoin = styled.button`
@@ -45,11 +41,11 @@ const StyledCoinWrapper = styled.div`
 `;
 
 export const Game = () => {
-  const { isActive, account } = useWallet();
+  const { account } = useWallet();
   const { balance, profit, getContractBalance, syncAll, addNotification } = useAppContext();
-  const contract = useCoinFlipContract();
   const [betAmount, setBetAmount] = useState(0.01);
   const [betChoice, setBetChoice] = useState(null);
+  const [shouldFlip, setShouldFlip] = useState(false);
 
   useEventCallback(
     "BetResult",
@@ -74,19 +70,18 @@ export const Game = () => {
 
   const handleBet = (betChoice) => {
     setBetChoice(betChoice);
-    doFlip();
+    setShouldFlip(true);
   };
 
-  if (!isActive || !account) {
-    return <ConnectButton block>Connect your wallet to start</ConnectButton>;
-  }
-
-  if (!contract) {
-    return <p>Could not connect to the contract</p>;
-  }
+  useEffect(() => {
+    if (shouldFlip) {
+      doFlip();
+      setShouldFlip(false);
+    }
+  }, [shouldFlip, doFlip]);
 
   return (
-    <div>
+    <>
       <h2>Hi, {account.substring(0, 5) + "..." + account.substring(account.length - 5)}</h2>
       <p>Ready to make some money? Enter the amount to bet and pick your side! Good luck!</p>
       <p
@@ -124,7 +119,7 @@ export const Game = () => {
           </div>
         </StyledCoinWrapper>
       </div>
-    </div>
+    </>
   );
 };
 

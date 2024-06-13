@@ -6,23 +6,21 @@ import { calculateGasMargin } from "../utils/calculateGasMargin";
 import { useAppContext } from "../AppContext";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 
-export const useFunction = (player, rawValue, args = []) => {
+export const useFunction = (functionName, rawValue, args = []) => {
   const contract = useCoinFlipContract();
   const { addTransaction, addNotification } = useAppContext();
 
   const doCall = useCallback(async () => {
-    if (!contract) {
-      return;
-    }
+    if (!contract) return;
 
     const parsedValue = rawValue ? parseEther(`${rawValue}`).toString() : undefined;
 
     try {
-      const estimatedGas = await contract.estimateGas[player](...args, {
+      const estimatedGas = await contract.estimateGas[functionName](...args, {
         value: parsedValue,
       });
 
-      const { hash, from, value, wait } = await contract[player](...args, {
+      const { hash, from, value, wait } = await contract[functionName](...args, {
         value: parsedValue,
         gasLimit: calculateGasMargin(estimatedGas),
       });
@@ -37,7 +35,7 @@ export const useFunction = (player, rawValue, args = []) => {
         hideIn: 2500,
       });
     }
-  }, [player, rawValue, args, contract, addTransaction, addNotification]);
+  }, [functionName, rawValue, args, contract, addTransaction, addNotification]);
 
   return doCall;
 };

@@ -1,4 +1,3 @@
-import React from "react";
 import { useAppContext } from "../AppContext";
 import styled from "@emotion/styled";
 import { Transaction } from "./Transaction";
@@ -16,15 +15,18 @@ const StyledNotificationsWrapper = styled.div`
 `;
 
 export const Notifications = () => {
-  const { transactions } = useAppContext();
-  const { notifications } = useAppContext();
+  const { notifications, transactions } = useAppContext();
 
   const messages = [...transactions, ...notifications].sort((a, b) => b.onCreatedTimeStamp - a.onCreatedTimeStamp);
 
   return (
     <StyledNotificationsWrapper>
       {messages.map((data) =>
-        data.type === "transaction" ? <Transaction key={data.id} {...data} /> : <Notification key={data.id} {...data} />
+        data.type === "transaction" ? (
+          <Transaction key={data.id} {...data} />
+        ) : (
+          <Notification key={data.id} hideIn={10000} {...data} />
+        )
       )}
     </StyledNotificationsWrapper>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "@emotion/styled";
 import "sanitize.css";
 
@@ -10,6 +10,9 @@ import { Admin } from "./components/Admin";
 import { Notifications } from "./components/Notifications";
 import { Warning } from "./components/Warning";
 import { Game } from "./components/Game";
+import { useCoinFlipContract } from "./hooks";
+import { ConnectButton } from "./components/ConnectButton";
+import { useWeb3React } from "@web3-react/core";
 
 const Wrapper = styled.div`
   background-color: ${({ theme }) => theme.background};
@@ -28,18 +31,33 @@ const Wrapper = styled.div`
 `;
 
 export const App = () => {
+  const { isActive, account } = useWeb3React();
+  const contract = useCoinFlipContract();
+
+  const content = useMemo(() => {
+    if (!isActive || !account) {
+      return <ConnectButton block>Connect your wallet to start</ConnectButton>;
+    }
+    if (!contract) {
+      return <NoContract />;
+    }
+    return <Game />;
+  }, [isActive, account, contract]);
+
   return (
     <Wrapper>
       <Notifications />
       <Warning />
       <Header />
       <Main>
-        <Card>
-          <Game />
-        </Card>
+        <Card>{content}</Card>
         <Admin />
       </Main>
       <Footer />
     </Wrapper>
   );
+};
+
+const NoContract = () => {
+  return <p>Could not connect to the contract</p>;
 };

@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from "react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Message } from "./Message";
+import { useNotification } from "../hooks";
 
 const StyledButtonIcon = styled.button`
   border: 0;
@@ -18,33 +18,17 @@ const StyledButtonIcon = styled.button`
 `;
 
 export const Notification = ({ icon, title, isSuccess, isError, wrapText, hideIn }) => {
-  const [isHiding, setIsHiding] = useState();
-  const [isHidden, setIsHidden] = useState();
+  const { isHiding, isHidden, closeNotification } = useNotification(hideIn);
 
-  const handleClose = useCallback(() => {
-    setIsHiding(true);
-    setTimeout(() => {
-      setIsHidden(true);
-    }, 500);
-  }, []);
-
-  useEffect(() => {
-    if (!hideIn) {
-      return;
-    }
-
-    setTimeout(() => {
-      handleClose();
-    }, [hideIn]);
-  }, [hideIn, handleClose]);
+  if (isHidden) return null;
 
   return (
     <Message error={isError} success={isSuccess} isHiding={isHiding} isHidden={isHidden} large>
-      {icon ? (
+      {icon && (
         <div style={{ textAlign: "center", marginBottom: 8 }}>
           <FontAwesomeIcon fixedWidth icon={icon} size="3x" />
         </div>
-      ) : null}
+      )}
 
       <span
         style={{
@@ -59,7 +43,7 @@ export const Notification = ({ icon, title, isSuccess, isError, wrapText, hideIn
         {title}
       </span>
       <StyledButtonIcon
-        onClick={handleClose}
+        onClick={closeNotification}
         style={{
           position: "absolute",
           top: 4,

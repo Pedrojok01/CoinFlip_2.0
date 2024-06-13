@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from "react";
 import styled from "@emotion/styled";
 import Jazzicon from "jazzicon";
 
-import { useWallet } from "../hooks/useWallet";
+import { useWallet } from "../hooks";
 
 const StyledIdenticon = styled.div`
   height: 1rem;

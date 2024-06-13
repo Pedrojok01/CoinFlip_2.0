@@ -5,9 +5,7 @@ import { Card } from "./Card";
 import { Eth } from "./Eth";
 import { NumberInput } from "./NumberInput";
 import { useAppContext } from "../AppContext";
-import { useCoinFlipContract } from "../hooks/useContract";
-import { useFunction } from "../hooks/useFunction";
-import { useWallet } from "../hooks/useWallet";
+import { useCoinFlipContract, useFunction, useWallet } from "../hooks";
 
 const useOwnerAddress = () => {
   const contract = useCoinFlipContract();

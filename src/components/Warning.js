@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 
-import { SUPPORTED_CHAINS } from "../data/constants";
-import { useWallet, isValidChainId, chains } from "../hooks/useWallet";
+import { CHAINS, SUPPORTED_CHAINS } from "../data/constants";
+import { useWallet, isValidChainId } from "../hooks";
 
 const StyledWarning = styled.div`
   background-color: ${({ theme }) => theme.colors.complementary};
@@ -29,7 +29,7 @@ export const Warning = () => {
   const isReady = useRenderTimeout();
   let warning = null;
 
-  const supportedChainNames = SUPPORTED_CHAINS.map((id) => chains[id]?.name).join(", ");
+  const supportedChainNames = SUPPORTED_CHAINS.map((id) => CHAINS[id]?.name).join(", ");
 
   if (!isMetaMask) {
     warning = "No MetaMask found, MetaMask is required to interact.";

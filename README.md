@@ -10,22 +10,27 @@
 
 </div>
 
+![Preview](./public/images/preview.gif)
+
 ## Table of Contents
 
 - [Table of Contents](#table-of-contents)
-  - [Updates](#updates)
+- [Updates](#updates)
 - [Description](#description)
 - [Built With](#built-with)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Smart-Contracts Deployment](#smart-contracts-deployment)
+    - [Coverage](#coverage)
+    - [Static Analyzer](#static-analyzer)
   - [Config \& Client](#config--client)
 - [Acknowledgments](#acknowledgments)
 - [Use](#use)
   - [⭐️ ... and don't forget to leave a star if you like it! ⭐️](#️--and-dont-forget-to-leave-a-star-if-you-like-it-️)
 
-### Updates
+## Updates
 
+- 2024/06 - Move from Truffle to Hardhat & Switch to Spolia network & Update to Chainlink VRF 2.5 & compiler to 0.8.20 & Clean contracts/app;
 - 2022/07 - Switch to Chainlink VRF v2 & Update solidity compiler version to 0.8.7;
 - 2022/12 - Switch to Goerli network v2 & upgrade all deps & Update solc to 0.8.16;
 
@@ -33,11 +38,11 @@
 
 Decentralized application (Dapp), EVM compatible, built as a part of the programming course: Ethereum201 on [academy.moralis.com](https://academy.moralis.io).
 
+The app is a simple coin flip game where you can double up your ETH or lose your bet. The game is based on a smart contract that uses Chainlink VRF to generate a random number.
+
 Smart contracts deployed on Sepolia testnet: [0x097d039Bb7353B0bcD3d585B5a71e8B575F2f3f7](https://sepolia.etherscan.io/address/0x097d039Bb7353B0bcD3d585B5a71e8B575F2f3f7#code)
 
 Try it yourself: [coinflip-double-up-your-eth.netlify.app/](https://coinflip-double-up-your-eth.netlify.app/)
-
-![Preview](./preview.gif)
 
 ## Built With
 
@@ -60,41 +65,71 @@ Make sure you have the following ready:
 
 Then create a new repo, open your favorite code editor, and clone the repo with the following cmd:
 
-```
-git clone https://github.com/Pedrojok01/Web3-Gaming-Platform.git .
+```bash
+git clone https://github.com/Pedrojok01/CoinFlip_2.0 .
 ```
 
 ### Smart-Contracts Deployment
 
-In your terminal, make sure you are in the `COINFLIP_2.0` repo, and type:
+In your terminal, make sure you are in the `COINFLIP_2.0` repo, then move to the blockchain folder :
 
-```sh
+```bash
+cd blockchain
+```
+
+Then run the following command to install the dependencies:
+
+```bash
 yarn install
 ```
 
 To deploy your smart-contracts:
 
-- Subscribe to Chainlink VRF v2 ( [Subscription to Chainlink VRF on Goerli](https://vrf.chain.link/goerli/new) ) ( [LINK Faucet](https://faucets.chain.link/) )
-- Add your <b>subscription id</b> to the migration file: `blockchain/migrations/1_CoinFlip_migration.js`
-- Run the command below to deploy to the network of your choice.
+- Subscribe to Chainlink VRF v2.5 on the [Chainlink VRF Sepolia dashboard](https://vrf.chain.link/sepolia/). You can get some test LINK there: [LINK Faucet](https://faucets.chain.link/).
+- Add your <b>subscription id</b> to the deployment script in `blockchain/scripts/deploy.js`. To deploy on different chains, you will also have to adjust the `COORDINATOR` and `KEY_HASH` values. You can refer to the [Chainlink docs](https://docs.chain.link/vrf/v2-5/supported-networks#configurations) to get the data for the desired network (if supported).
+- Also, make sure that the network is configured in `hardhat.config.js` and that you have defined the required variables in the `.env` file.
+- Edit the script in `blockchain/package.json` to deploy the contract on the network of your choice.
+- Finally, run the command below to deploy to the network of your choice.
 
-```sh
-truffle migrate --network <<network name here>>
+```bash
+yarn deploy
 ```
 
-So for Goerli, type:
+#### Coverage
 
-```sh
-truffle migrate --network goerli
+To check the coverage of the tests, run the following command:
+
+```bash
+yarn cover
 ```
 
-- Replace the contract address in `src/constants.js`
-- Replace the abi file in `src/abis/coinFlip.js`
-- Make sure to fund the contract with some ETH ( [Faucet for the Goerli network](https://goerlifaucet.org/) )
+And see the results printed in the terminal:
+
+![Preview](./public/images/coverage.png)
+
+#### Static Analyzer
+
+For basic security checks, you can run both [Slither](https://github.com/crytic/slither) and [Aderyn](https://github.com/Cyfrin/aderyn) (refer to their doc to install them) with the following commands:
+
+```bash
+yarn slither
+```
+
+```bash
+yarn aderyn
+```
+
+Aderyn will print a nice report file called `report.md` at the root of the project.
 
 ### Config & Client
 
 Before each deployment, make sure to:
+
+- Replace the contract address in `src/data/constants.js`
+- Replace the abi file in `src/data/coinFlipAbi.js`
+- Make sure to fund the contract with some ETH ( [Faucet for the Sepolia network](https://goerlifaucet.org/) )
+
+---
 
 - Change the `COINFLIP_ADDRESS` in `/src/constants.js` to your deployed contracts address;
 - Copy the new abi file into the `src/abis` folder if you've made any changes to the contracts;
