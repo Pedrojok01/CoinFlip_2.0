@@ -1,7 +1,8 @@
-import { useAppContext } from "../AppContext";
 import styled from "@emotion/styled";
-import { Transaction } from "./Transaction";
+
+import { useAppContext } from "../AppContext";
 import { Notification } from "./Notification";
+import { Transaction } from "./Transaction";
 
 const StyledNotificationsWrapper = styled.div`
   z-index: 100;

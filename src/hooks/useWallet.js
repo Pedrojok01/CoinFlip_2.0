@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo } from "react";
-import { SUPPORTED_CHAINS } from "../data/constants";
+
 import { useWeb3React } from "@web3-react/core";
+
+import { SUPPORTED_CHAINS } from "../data/constants";
 
 export const isValidChainId = (chainId) => (chainId ? SUPPORTED_CHAINS.includes(chainId) : undefined);
 
@@ -28,7 +30,7 @@ const addSepoliaNetwork = async () => {
 };
 
 export const useWallet = () => {
-  const { isActive, account, chainId, provider, connector } = useWeb3React();
+  const { isActive, chainId, connector } = useWeb3React();
 
   const isValidChain = useMemo(() => isValidChainId(chainId), [chainId]);
 
@@ -74,11 +76,8 @@ export const useWallet = () => {
       activate: handleActivate,
       isActive,
       deactivate: handleDeactivate,
-      chainId,
-      account,
       isMetaMask: !!window.ethereum?.isMetaMask,
-      provider,
     }),
-    [handleActivate, isActive, handleDeactivate, chainId, account, provider]
+    [handleActivate, isActive, handleDeactivate]
   );
 };

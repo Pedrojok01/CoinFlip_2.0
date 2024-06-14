@@ -1,5 +1,5 @@
-import React from "react";
 import styled from "@emotion/styled";
+
 import { ConnectButton } from "./ConnectButton";
 
 const Logo = styled.h1`

@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExternalLinkAlt, faCheck, faTimes, faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { useEtherScanLink } from "../hooks";
-import { WAITFOR_CONFIRMATIONS } from "../data/constants";
+import PropTypes from "prop-types";
+
+import { useTransaction } from "../hooks";
 import { Message } from "./Message";
-import { useAppContext } from "../AppContext";
 
 const StyledLinkIcon = styled.a`
   color: ${({ theme }) => theme.text};
@@ -16,32 +15,17 @@ const StyledLinkIcon = styled.a`
   }
 `;
 
-export const Transaction = ({ hash, wait }) => {
-  const { syncAll } = useAppContext();
-  const [isConfirmed, setIsConfirmed] = useState();
-  const [isHiding, setIsHiding] = useState();
-  const [isHidden, setIsHidden] = useState();
-  const [hasError, setHasError] = useState();
-  const etherScanAddress = useEtherScanLink(hash, "tx");
+const HashSpan = styled.span`
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 4px;
+  margin-left: 4px;
+`;
 
-  useEffect(() => {
-    if (wait) {
-      wait(WAITFOR_CONFIRMATIONS).then(({ status }) => {
-        syncAll();
-        if (status === 1) {
-          setIsConfirmed(true);
-          setTimeout(() => {
-            setIsHiding(true);
-          }, 2000);
-          setTimeout(() => {
-            setIsHidden(true);
-          }, 2500);
-        } else {
-          setHasError(true);
-        }
-      });
-    }
-  }, [wait, setIsConfirmed, setIsHiding, setIsHidden, setHasError, syncAll]);
+export const Transaction = ({ hash, wait }) => {
+  const { isConfirmed, isHiding, isHidden, hasError, etherScanAddress } = useTransaction(hash, wait);
 
   return (
     <Message error={hasError} success={isConfirmed} isHiding={isHiding} isHidden={isHidden}>
@@ -49,21 +33,15 @@ export const Transaction = ({ hash, wait }) => {
       {hasError && <FontAwesomeIcon fixedWidth icon={faTimes} />}
       {!isConfirmed && !hasError && <FontAwesomeIcon fixedWidth icon={faSpinner} spin />}
 
-      <span
-        style={{
-          flexGrow: 1,
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          marginRight: 4,
-          marginLeft: 4,
-        }}
-      >
-        {hash}
-      </span>
+      <HashSpan>{hash}</HashSpan>
       <StyledLinkIcon href={etherScanAddress} target="_blank" rel="noopener noreferrer">
         <FontAwesomeIcon fixedWidth icon={faExternalLinkAlt} />
       </StyledLinkIcon>
     </Message>
   );
+};
+
+Transaction.propTypes = {
+  hash: PropTypes.string.isRequired,
+  wait: PropTypes.func.isRequired,
 };

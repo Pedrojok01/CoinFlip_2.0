@@ -1,8 +1,9 @@
+import { useWeb3React } from "@web3-react/core";
+
 import { CHAINS } from "../data/constants";
-import { useWallet } from "./useWallet";
 
 export const useEtherScanLink = (id, type) => {
-  const { chainId } = useWallet();
+  const { chainId } = useWeb3React();
 
   if (type === "address") {
     return `https://${CHAINS[chainId].etherScanPrefix}etherscan.io/address/${id}`;

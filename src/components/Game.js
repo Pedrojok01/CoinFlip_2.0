@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useWeb3React } from "@web3-react/core";
 import styled from "@emotion/styled";
 import Color from "color";
-import { formatEther } from "@ethersproject/units";
-import { faTrophy, faSadTear } from "@fortawesome/free-solid-svg-icons";
 
 import { Button } from "./Button";
 import { Eth } from "./Eth";
 import { NumberInput } from "./NumberInput";
-import { useFunction, useEventCallback, useWallet } from "../hooks";
+import { useBetResult, useGame } from "../hooks";
 import { useAppContext } from "../AppContext";
 import { ReactComponent as EthereumLogo } from "../ethereumLogo.svg";
 
@@ -41,44 +39,11 @@ const StyledCoinWrapper = styled.div`
 `;
 
 export const Game = () => {
-  const { account } = useWallet();
-  const { balance, profit, getContractBalance, syncAll, addNotification } = useAppContext();
-  const [betAmount, setBetAmount] = useState(0.01);
-  const [betChoice, setBetChoice] = useState(null);
-  const [shouldFlip, setShouldFlip] = useState(false);
+  const { account } = useWeb3React();
+  const { balance, profit } = useAppContext();
+  const { betAmount, setBetAmount, handleBet, collectFunds } = useGame();
 
-  useEventCallback(
-    "BetResult",
-    (address, win, value) => {
-      if (address === account) {
-        syncAll();
-        addNotification({
-          title: win ? `You won ${formatEther(value)} ETH!` : `You lost ${formatEther(value)} ETH. Let's try again!`,
-          icon: win ? faTrophy : faSadTear,
-          isSuccess: win,
-          isError: !win,
-        });
-      } else {
-        getContractBalance();
-      }
-    },
-    [account, addNotification, syncAll]
-  );
-
-  const doFlip = useFunction("bet", betAmount, [betChoice]);
-  const collectFunds = useFunction("withdrawPlayerBalance");
-
-  const handleBet = (betChoice) => {
-    setBetChoice(betChoice);
-    setShouldFlip(true);
-  };
-
-  useEffect(() => {
-    if (shouldFlip) {
-      doFlip();
-      setShouldFlip(false);
-    }
-  }, [shouldFlip, doFlip]);
+  useBetResult(account);
 
   return (
     <>

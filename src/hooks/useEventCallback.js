@@ -1,4 +1,5 @@
 import { useEffect, useCallback } from "react";
+
 import { useCoinFlipContract } from "./useContract";
 
 export const useEventCallback = (name, callback, deps) => {

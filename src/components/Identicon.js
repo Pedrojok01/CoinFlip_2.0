@@ -1,8 +1,8 @@
-import React, { useRef, useEffect } from "react";
-import styled from "@emotion/styled";
-import Jazzicon from "jazzicon";
+import { useRef, useEffect, useCallback } from "react";
 
-import { useWallet } from "../hooks";
+import styled from "@emotion/styled";
+import { useWeb3React } from "@web3-react/core";
+import Jazzicon from "jazzicon";
 
 const StyledIdenticon = styled.div`
   height: 1rem;
@@ -12,15 +12,19 @@ const StyledIdenticon = styled.div`
 `;
 
 export const Identicon = () => {
-  const { account } = useWallet();
+  const { account } = useWeb3React();
   const ref = useRef();
 
-  useEffect(() => {
+  const createJazzicon = useCallback(() => {
     if (account && ref.current) {
       ref.current.innerHTML = "";
       ref.current.appendChild(Jazzicon(16, parseInt(account.slice(2, 10), 16)));
     }
   }, [account]);
+
+  useEffect(() => {
+    createJazzicon();
+  }, [createJazzicon]);
 
   return <StyledIdenticon ref={ref} />;
 };

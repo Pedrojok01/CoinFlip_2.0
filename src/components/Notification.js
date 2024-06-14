@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+
 import { Message } from "./Message";
 import { useNotification } from "../hooks";
 

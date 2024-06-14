@@ -1,18 +1,11 @@
 import React, { useMemo } from "react";
+
+import { useWeb3React } from "@web3-react/core";
 import styled from "@emotion/styled";
 import "sanitize.css";
 
-import { Card } from "./components/Card";
-import { Main } from "./components/Main";
-import { Header } from "./components/Header";
-import { Footer } from "./components/Footer";
-import { Admin } from "./components/Admin";
-import { Notifications } from "./components/Notifications";
-import { Warning } from "./components/Warning";
-import { Game } from "./components/Game";
+import { Admin, Card, ConnectButton, Footer, Game, Header, Main, Notifications, Warning } from "./components";
 import { useCoinFlipContract } from "./hooks";
-import { ConnectButton } from "./components/ConnectButton";
-import { useWeb3React } from "@web3-react/core";
 
 const Wrapper = styled.div`
   background-color: ${({ theme }) => theme.background};

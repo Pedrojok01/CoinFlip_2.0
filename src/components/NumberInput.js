@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
+
 import styled from "@emotion/styled";
 
 const StyledNumberInput = styled.input`

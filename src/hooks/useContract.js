@@ -1,10 +1,12 @@
 import { useMemo } from "react";
+
+import { useWeb3React } from "@web3-react/core";
 import { Contract } from "@ethersproject/contracts";
-import { useWallet } from "./useWallet";
+
 import { COINFLIP } from "../data/constants";
 
 export const useContract = (address, abi) => {
-  const { provider, account } = useWallet();
+  const { provider, account } = useWeb3React();
 
   return useMemo(() => {
     if (!address || !abi || !provider) return null;

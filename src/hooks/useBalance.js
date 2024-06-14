@@ -1,9 +1,11 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
-import { useWallet } from "./useWallet";
+
+import { useWeb3React } from "@web3-react/core";
+
 import { formatResult } from "../utils/formatResult";
 
 export const useBalance = () => {
-  const { provider, account } = useWallet();
+  const { provider, account } = useWeb3React();
   const [balance, setBalance] = useState();
 
   const getBalance = useCallback(async () => {

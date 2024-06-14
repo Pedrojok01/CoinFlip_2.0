@@ -1,4 +1,5 @@
 import { useCallback, useState, useEffect, useMemo } from "react";
+
 import { useCoinFlipContract } from "./useContract";
 import { formatResult } from "../utils/formatResult";
 

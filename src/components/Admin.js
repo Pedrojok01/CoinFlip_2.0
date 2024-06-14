@@ -1,37 +1,15 @@
-import React, { useEffect, useState } from "react";
-
 import { Button } from "./Button";
 import { Card } from "./Card";
 import { Eth } from "./Eth";
 import { NumberInput } from "./NumberInput";
 import { useAppContext } from "../AppContext";
-import { useCoinFlipContract, useFunction, useWallet } from "../hooks";
-
-const useOwnerAddress = () => {
-  const contract = useCoinFlipContract();
-  const [ownerAddress, setOwnerAddress] = useState(null);
-
-  useEffect(() => {
-    if (!contract) {
-      return;
-    }
-    contract.functions.owner().then(setOwnerAddress);
-  }, [contract]);
-
-  return ownerAddress;
-};
+import { useAdmin } from "../hooks";
 
 export const Admin = () => {
-  const contract = useCoinFlipContract();
-  const { account } = useWallet();
-  const [deposit, setDeposit] = useState(1);
   const { contractBalance } = useAppContext();
-  const ownerAddress = useOwnerAddress();
-  const doDeposit = useFunction("deposit", deposit);
-  const doWithdrawAll = useFunction("withdrawContractBalance");
-  const isOwner = ownerAddress && ownerAddress[0] === account;
+  const { deposit, setDeposit, doDeposit, doWithdrawAll, isOwner } = useAdmin();
 
-  if (!contract || !isOwner) {
+  if (!isOwner || !contractBalance) {
     return null;
   }
 

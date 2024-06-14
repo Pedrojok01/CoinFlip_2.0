@@ -1,12 +1,13 @@
-// index.js
-import React, { useMemo } from "react";
+import { StrictMode, useMemo } from "react";
 import { createRoot } from "react-dom/client";
-import { App } from "./App";
-import { darkTheme, lightTheme } from "./theme";
+
 import { ThemeProvider } from "@emotion/react";
-import { useAppContext, AppContextProvider } from "./AppContext";
 import { Web3ReactProvider } from "@web3-react/core";
+
+import { App } from "./App";
+import { useAppContext, AppContextProvider } from "./AppContext";
 import { metaMask, metaMaskHooks } from "./data/connectors";
+import { darkTheme, lightTheme } from "./theme";
 
 const root = createRoot(document.getElementById("root"));
 
@@ -22,11 +23,11 @@ const RootApp = () => {
 };
 
 root.render(
-  <React.StrictMode>
+  <StrictMode>
     <Web3ReactProvider connectors={[[metaMask, metaMaskHooks]]}>
       <AppContextProvider>
         <RootApp />
       </AppContextProvider>
     </Web3ReactProvider>
-  </React.StrictMode>
+  </StrictMode>
 );

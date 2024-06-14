@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+
 import { DEFAULT_THEME } from "../data/constants";
 
 export const usePersistStore = create(

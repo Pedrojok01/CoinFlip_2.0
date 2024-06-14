@@ -1,11 +1,12 @@
-import React from "react";
+import { useWeb3React } from "@web3-react/core";
 
 import { useWallet } from "../hooks";
 import { Button } from "./Button";
 import { Identicon } from "./Identicon";
 
 export const ConnectButton = ({ block, children }) => {
-  const { activate, isActive, deactivate, account, isMetaMask } = useWallet();
+  const { account } = useWeb3React();
+  const { activate, isActive, deactivate, isMetaMask } = useWallet();
 
   if (account && isActive) {
     return (

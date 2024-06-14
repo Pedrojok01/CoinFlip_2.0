@@ -1,10 +1,11 @@
 import { useCallback } from "react";
+
 import { parseEther } from "@ethersproject/units";
+import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 
 import { useCoinFlipContract } from "./useContract";
-import { calculateGasMargin } from "../utils/calculateGasMargin";
 import { useAppContext } from "../AppContext";
-import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
+import { calculateGasMargin } from "../utils/calculateGasMargin";
 
 export const useFunction = (functionName, rawValue, args = []) => {
   const contract = useCoinFlipContract();

@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+
 import styled from "@emotion/styled";
+import { useWeb3React } from "@web3-react/core";
 
 import { CHAINS, SUPPORTED_CHAINS } from "../data/constants";
 import { useWallet, isValidChainId } from "../hooks";
@@ -25,7 +27,8 @@ const useRenderTimeout = (ms = 1000) => {
 };
 
 export const Warning = () => {
-  const { chainId, isMetaMask, isActive } = useWallet();
+  const { chainId } = useWeb3React();
+  const { isMetaMask, isActive } = useWallet();
   const isReady = useRenderTimeout();
   let warning = null;
 
