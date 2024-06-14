@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo } from "react";
 import { useWeb3React } from "@web3-react/core";
 
 import { SUPPORTED_CHAINS } from "../data/constants";
+import { useStore } from "../stores/useStore";
 
 export const isValidChainId = (chainId) => (chainId ? SUPPORTED_CHAINS.includes(chainId) : undefined);
 
@@ -31,6 +32,7 @@ const addSepoliaNetwork = async () => {
 
 export const useWallet = () => {
   const { isActive, chainId, connector } = useWeb3React();
+  const { reset } = useStore();
 
   const isValidChain = useMemo(() => isValidChainId(chainId), [chainId]);
 
@@ -68,8 +70,9 @@ export const useWallet = () => {
   }, [connector]);
 
   const handleDeactivate = useCallback(() => {
+    reset();
     connector.deactivate ? connector.deactivate() : connector.resetState();
-  }, [connector]);
+  }, [connector, reset]);
 
   return useMemo(
     () => ({

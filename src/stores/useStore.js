@@ -18,4 +18,9 @@ export const useStore = create((set) => ({
         { ...notification, onCreatedTimeStamp: new Date(), type: "notification", id: uuidv4() },
       ],
     })),
+  reset: () =>
+    set({
+      transactions: [],
+      notifications: [],
+    }),
 }));

@@ -6,7 +6,7 @@ export const useEtherScanLink = (id, type) => {
   const { chainId } = useWeb3React();
 
   if (type === "address") {
-    return `https://${CHAINS[chainId].etherScanPrefix}etherscan.io/address/${id}`;
+    return `https://${CHAINS[chainId]?.etherScanPrefix}etherscan.io/address/${id}`;
   }
-  return `https://${CHAINS[chainId].etherScanPrefix}etherscan.io/tx/${id}`;
+  return `https://${CHAINS[chainId]?.etherScanPrefix}etherscan.io/tx/${id}`;
 };
