@@ -1,5 +1,7 @@
 import { useWeb3React } from "@web3-react/core";
 
+import PropTypes from "prop-types";
+
 import { useWallet } from "../hooks";
 import { Button } from "./Button";
 import { Identicon } from "./Identicon";
@@ -30,4 +32,9 @@ export const ConnectButton = ({ block, children }) => {
       {children || "Connect Wallet"}
     </Button>
   );
+};
+
+ConnectButton.propTypes = {
+  block: PropTypes.bool,
+  children: PropTypes.node,
 };

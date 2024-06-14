@@ -76,10 +76,28 @@ export const Game = () => {
           Minimum required bet: <Eth>0.001</Eth>
         </p>
         <StyledCoinWrapper>
-          <div onClick={() => handleBet(0)}>
+          <div
+            role="button"
+            tabIndex="0"
+            onClick={() => handleBet(0)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                handleBet(0);
+              }
+            }}
+          >
             <HeadsCoin />
           </div>
-          <div onClick={() => handleBet(1)}>
+          <div
+            role="button"
+            tabIndex="0"
+            onClick={() => handleBet(1)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                handleBet(1);
+              }
+            }}
+          >
             <TailsCoin />
           </div>
         </StyledCoinWrapper>

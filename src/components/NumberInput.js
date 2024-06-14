@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 
+import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 
 const StyledNumberInput = styled.input`
@@ -60,4 +61,10 @@ export const NumberInput = ({ value, onChange, margin }) => {
       <StyledNumberInput value={internalValue} onBlur={handleChange} onChange={handleInternalChange} />
     </Wrapper>
   );
+};
+
+NumberInput.propTypes = {
+  value: PropTypes.number.isRequired,
+  onChange: PropTypes.func.isRequired,
+  margin: PropTypes.bool,
 };

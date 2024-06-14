@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 
 const StyledCard = styled.div`
@@ -15,4 +16,8 @@ const StyledCard = styled.div`
 
 export const Card = ({ children }) => {
   return <StyledCard>{children}</StyledCard>;
+};
+
+Card.propTypes = {
+  children: PropTypes.node.isRequired,
 };

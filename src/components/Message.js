@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 
 const StyledMessage = styled.div`
@@ -23,3 +24,7 @@ const StyledMessage = styled.div`
 `;
 
 export const Message = ({ children, ...rest }) => <StyledMessage {...rest}>{children}</StyledMessage>;
+
+Message.propTypes = {
+  children: PropTypes.node.isRequired,
+};

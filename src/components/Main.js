@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 
 const StyledMain = styled.div`
@@ -12,3 +13,7 @@ const StyledMain = styled.div`
 `;
 
 export const Main = ({ children }) => <StyledMain>{children}</StyledMain>;
+
+Main.propTypes = {
+  children: PropTypes.node.isRequired,
+};

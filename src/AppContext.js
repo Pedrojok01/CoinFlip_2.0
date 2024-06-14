@@ -1,11 +1,11 @@
-import React, { useCallback, useContext, useEffect } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo } from "react";
 
 import PropTypes from "prop-types";
 
 import { useReadFunction, useBalance } from "./hooks";
 import { usePersistStore, useStore } from "./stores";
 
-const AppContext = React.createContext({});
+const AppContext = createContext({});
 export const useAppContext = () => useContext(AppContext);
 
 export const AppContextProvider = ({ children }) => {
@@ -43,27 +43,40 @@ export const AppContextProvider = ({ children }) => {
     syncAll();
   }, [syncAll]);
 
-  return (
-    <AppContext.Provider
-      value={{
-        theme,
-        toggleTheme,
-        transactions,
-        addTransaction,
-        notifications,
-        addNotification,
-        balance,
-        getBalance,
-        profit,
-        getProfit,
-        contractBalance,
-        getContractBalance,
-        syncAll,
-      }}
-    >
-      {children}
-    </AppContext.Provider>
+  const contextValue = useMemo(
+    () => ({
+      theme,
+      toggleTheme,
+      transactions,
+      addTransaction,
+      notifications,
+      addNotification,
+      balance,
+      getBalance,
+      profit,
+      getProfit,
+      contractBalance,
+      getContractBalance,
+      syncAll,
+    }),
+    [
+      theme,
+      toggleTheme,
+      transactions,
+      addTransaction,
+      notifications,
+      addNotification,
+      balance,
+      getBalance,
+      profit,
+      getProfit,
+      contractBalance,
+      getContractBalance,
+      syncAll,
+    ]
   );
+
+  return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;
 };
 
 AppContextProvider.propTypes = {

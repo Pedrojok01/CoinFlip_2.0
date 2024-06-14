@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -55,4 +56,13 @@ export const Notification = ({ icon, title, isSuccess, isError, wrapText, hideIn
       </StyledButtonIcon>
     </Message>
   );
+};
+
+Notification.propTypes = {
+  icon: PropTypes.object,
+  title: PropTypes.string,
+  isSuccess: PropTypes.bool,
+  isError: PropTypes.bool,
+  wrapText: PropTypes.bool,
+  hideIn: PropTypes.number,
 };
