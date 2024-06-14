@@ -21,6 +21,8 @@
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Smart-Contracts Deployment](#smart-contracts-deployment)
+    - [Install the dependencies](#install-the-dependencies)
+    - [Deployement](#deployement)
     - [Coverage](#coverage)
     - [Static Analyzer](#static-analyzer)
   - [Config \& Client](#config--client)
@@ -71,6 +73,8 @@ git clone https://github.com/Pedrojok01/CoinFlip_2.0 .
 
 ### Smart-Contracts Deployment
 
+#### Install the dependencies
+
 In your terminal, make sure you are in the `COINFLIP_2.0` repo, then move to the blockchain folder :
 
 ```bash
@@ -82,6 +86,8 @@ Then run the following command to install the dependencies:
 ```bash
 yarn install
 ```
+
+#### Deployement
 
 To deploy your smart-contracts:
 
